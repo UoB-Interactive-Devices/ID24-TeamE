@@ -5,7 +5,7 @@
 - **Idea Name 2**: Description
 - **Idea Name 3**: Description
 ### Liam
-- **Stolen or Not**: A device that you can point at an artifact in a museum, and an indicator will simply tell you if that item was stolen or not.
+- **Stolen or Not**: A device that you can point at an artifact in a museum and an indicator will simply tell you if that item was stolen or not.
 - **Idea Name 2**: Description
 - **Idea Name 3**: Description
 ### Himanshu
