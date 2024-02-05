@@ -1,15 +1,17 @@
 #include <FastLED.h>
+#include <Servo.h>
 
-#define NUM_LEDS 48
-#define DATA_PIN 3
-#define LED_TYPE WS2812B
-#define WATER_MODE 0
+#define NUM_LEDS 48 // number of LEDs in ring
+#define DATA_PIN 4 // data pin for LED ring
+#define LED_TYPE WS2812B // controller type for LEDs
+#define WATER_MODE 0 
 #define SUNLIGHT_MODE 1
 #define MAX_BRIGHTNESS 30
 #define TAP_INPUT_THRESHOLD 10 //minimum value needed for tap to be considered open
 
 
 CRGB leds[NUM_LEDS];
+Servo myservo;  // create servo object to control a servo
 
 const int pinTap = A1; //potentiometer port
 int tapValue = 0; //fallback tap reading
@@ -26,6 +28,7 @@ bool statModeChanged = true; //true if user has just switched which stat they ar
 int statMode = WATER_MODE; //0 = water, 1 = health
 
 int growth = 0;
+int servoVal = 70; // sets inital servo angle to 70 (makes it kind of horizontal)
 
 int blah = 0;
 
@@ -37,10 +40,17 @@ void setup() {
   FastLED.addLeds<LED_TYPE, DATA_PIN>(leds, NUM_LEDS);
   FastLED.clear();
   FastLED.show();
+  
   Serial.begin(9600);
+
+  myservo.attach(9);
+  myservo.write(servoVal);
+  delay(500);
+  myservo.detach();
 }
 
 void loop() {
+  
   // int buttonValue = digitalRead(pinButton);
   // Serial.print('\n');
   // Serial.print("button: ");
@@ -103,9 +113,6 @@ void loop() {
         updateButton();
       }
     }
-    for(int i = num_sunlight_leds; i < NUM_LEDS; i++){
-      leds[i] = CRGB(0, 0, 0);
-    }
     statModeChanged = false;
     FastLED.show();
   }
@@ -138,22 +145,9 @@ void loop() {
   if(waterLevel > MAX_WATER_LEVEL) waterLevel = MAX_WATER_LEVEL;
 
 
-  // Apply the twinkling effect constantly
-  while (true && false) {
-    for (int i = 0; i < waterLevel; i++) {
-      // Add subtle twinkling with minor color variations
-      if (random(10) > 7) { // Adjust the frequency of twinkles here
-        int subtleTwinkle = 180 + random(76); // Subtle variation in blue
-        leds[i] = CRGB(0, 0, subtleTwinkle);
-      } else {
-        leds[i] = CRGB(0, 0, 200); // Base blue color
-      }
-    }
-    FastLED.show();
-    delay(50); // Control the speed of the twinkling effect
-  }
 
   buttonChanged = false;
+  
 }
 
 //set all Led's to a given colour
