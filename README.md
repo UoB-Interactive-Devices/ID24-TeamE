@@ -17,6 +17,6 @@
 - **Idea Name 2**: Description
 - **Idea Name 3**: Description
 ### Umad
-- **Idea Name 1**: Description
+- **See it to belive it** An Augmented reality app that visualises extinct animals showing all their characterictis to help vistors really immerse themselves in the experience 
 - **Idea Name 2**: Description
 - **Idea Name 3**: Description
