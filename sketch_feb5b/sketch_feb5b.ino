@@ -7,9 +7,15 @@
 #define WATER_MODE 0 
 #define SUNLIGHT_MODE 1
 #define MAX_BRIGHTNESS 30
+#define MIN_GROWTH 0
+#define MAX_GROWTH 10000
+
+
 #define TAP_INPUT_THRESHOLD 10 //minimum value needed for tap to be considered open
 
-const long DECAY_FREQ = 1000;
+const long DECAY_FREQ = 100;
+const long GROWTH_INTERVAL = 5000;
+
 const int WATER_DECREASE_RATE = 30;
 
 CRGB leds[NUM_LEDS];
@@ -28,7 +34,8 @@ int waterLevel = 26*255 + 10; // Set starting water level here: this shows 26 fu
 const int MAX_WATER_LEVEL = 48*255;
 bool statModeChanged = true; //true if user has just switched which stat they are viewing
 
-int growth = 0;
+int growth = 70;
+int growthRate = 0;
 int servoVal = 70; // sets inital servo angle to 70 (makes it kind of horizontal)
 
 int buttonPushCounter = 0;  // counter for the number of button presses
@@ -37,6 +44,9 @@ int lastButtonState = 0;    // previous state of the button
 int mode = 0; //MODES: 0 = Water level. 1 = Light Level. 2 = Health Level
 bool stateModeChange = true;
 
+int lastGrowth = 0;
+
+unsigned long growthMillis = millis();
 const long updateDelay = 100; // Shorter delay for more frequent shimmer updates
 
 void setup() {
@@ -55,13 +65,17 @@ void setup() {
 
 }
 
+unsigned long previousMillis1 = 0;
 unsigned long previousMillis = 0;
 const long animationDelay = 50; // Interval at which to update LEDs
 
 
 void loop() {
   unsigned long currentMillis = millis();
-  
+  growthMillis = millis();
+  Serial.println("millis: " + String(currentMillis));
+  Serial.println("growth millis: " + String(growthMillis));
+
   buttonState = digitalRead(pinButton);
   buttonStatus();
 
@@ -72,12 +86,34 @@ void loop() {
     waterFilling();
   }
 
-  if (currentMillis - previousMillis >= DECAY_FREQ) {
+  if (currentMillis - previousMillis1 >= DECAY_FREQ) {
     waterLevel -= WATER_DECREASE_RATE;
-    previousMillis = currentMillis;
+    // previousMillis1 = currentMillis;
     Serial.println(waterLevel);
     if (waterLevel <= 0) waterLevel = 0;
+
+    growthRate = sunlightValue * 0.01 * (waterLevel / 255);
+
+    growth += growthRate;
+    if(growth >= MAX_GROWTH) growth = MAX_GROWTH;
+    if(growth <= MIN_GROWTH) growth = MIN_GROWTH;
+
+    // Serial.println("growth: " + String(growth));
+    // Serial.println("growth rate: " + String(growthRate));
   }
+
+  if (growthMillis - lastGrowth >= GROWTH_INTERVAL && servoVal < 180){
+    servoVal = map(growth, MIN_GROWTH, MAX_GROWTH, 70, 180);
+    Serial.println("servo: " + String(servoVal));
+    Serial.println("GROWING");
+
+      myservo.attach(9);
+      myservo.write(servoVal);
+      delay(500);
+      myservo.detach();
+      lastGrowth = millis();
+  }
+
 
   //---------------------------------
   //------ WATER LEVEL MODE ---------
@@ -89,6 +125,7 @@ void loop() {
     int excessWater = waterLevel % 255;
     static unsigned long lastUpdate = 0;
     
+    Serial.println("full: " + String(num_full_leds));
 
     if (stateModeChange) {
       setAllLeds(CRGB(0, 0, 0));
@@ -97,28 +134,54 @@ void loop() {
       lastUpdate = currentMillis;
     }
 
-    // Update shimmer effect for all lit LEDs
-    if (currentMillis - lastUpdate > updateDelay) {
-      for (int i = 0; i < currentIndex; i++) {
-        int brightness = random(MAX_BRIGHTNESS / 2, MAX_BRIGHTNESS);
-        int blueHue = random(160, 255); // Range of blue hues
-        leds[i] = CRGB(150, 50, blueHue).nscale8(brightness);
-      }
-      FastLED.show();
-      lastUpdate = currentMillis;
-    }
+    // // Update shimmer effect for all lit LEDs
+    // if (currentMillis - lastUpdate > updateDelay) {
+    //   for (int i = 0; i < currentIndex; i++) {
+    //     int brightness = random(MAX_BRIGHTNESS / 2, MAX_BRIGHTNESS);
+    //     int blueHue = random(160, 255); // Range of blue hues
+    //     leds[i] = CRGB(150, 50, blueHue).nscale8(brightness);
+    //   }
+    //   FastLED.show();
+    //   lastUpdate = currentMillis;
+    // }
 
-    // Incremental filling of LEDs
-    if (currentMillis - previousMillis >= animationDelay) {
-      if (currentIndex < num_full_leds) {
+
+    for(int i = 0; i < NUM_LEDS; i++){
         int brightness = random(MAX_BRIGHTNESS / 2, MAX_BRIGHTNESS);
         int blueHue = random(160, 255);
-        leds[currentIndex] = CRGB(160, 50, blueHue).nscale8(brightness);
+      if (i < num_full_leds) {
+
+        leds[i] = CRGB(160, 50, blueHue).nscale8(brightness);
         FastLED.show();
-        currentIndex++;
-        previousMillis = currentMillis;
+      }
+      else if(i == num_full_leds){
+        leds[i] = CRGB(160, 50, blueHue).nscale8((excessWater*brightness/255));
+      }
+      else{
+        leds[i] = CRGB(0, 0, 0);
       }
     }
+
+    FastLED.show();
+
+
+
+  // //Incremental filling of LEDs
+  //   if (currentMillis - previousMillis >= animationDelay) {
+  //     if (currentIndex < num_full_leds) {
+  //       int brightness = random(MAX_BRIGHTNESS / 2, MAX_BRIGHTNESS);
+  //       int blueHue = random(160, 255);
+  //       leds[currentIndex] = CRGB(160, 50, blueHue).nscale8(brightness);
+  //       FastLED.show();
+  //       currentIndex++;
+  //       // previousMillis = currentMillis;
+  //     }
+  //     else{
+  //       leds[currentIndex] = CRGB(0, 0, 0);
+  //       if(currentIndex <= NUM_LEDS) currentIndex++;
+  //     }
+  //     FastLED.show();
+  //   }
     
   }
 
@@ -153,18 +216,9 @@ if (mode == 1) { // Light Level Mode
       }
     }
     FastLED.show();
-    previousMillis = currentMillis; // Update the time for the next update
   }
 
-  // Apply a smooth and gentle pulsating effect
-  if (currentMillis - lastUpdate > pulseInterval) {
-    pulseBrightness += pulseDirection;
-    if (pulseBrightness >= maxPulseBrightness || pulseBrightness <= minPulseBrightness) {
-      pulseDirection = -pulseDirection; // Reverse the direction of brightness change
-    }
-    lastUpdate = currentMillis;
-  }
-}
+ }
 
 
 
@@ -187,7 +241,7 @@ if (mode == 1) { // Light Level Mode
     }
     FastLED.show();
   }
-
+  previousMillis = currentMillis;
 }
 
 void updateWaterLevelLeds(unsigned long currentMillis) {
