@@ -18,5 +18,5 @@
 - **Idea Name 3**: Description
 ### Umad
 - **See it to belive it** An Augmented reality app that visualises extinct animals showing all their characterictis to help vistors really immerse themselves in the experience 
-- **Idea Name 2**: Description
-- **Idea Name 3**: Description
+- **Feel it to belive it**: Touch sensative information boards that would help you feel what type of enviroment the artiffact used to be in or how the skin or characteristics of an animal would feel
+- **Museum Passport**: A device that collects stamps after you have visted and tested your knowledge on the artefacts
