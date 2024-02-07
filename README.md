@@ -9,9 +9,9 @@
 - **Plaque to Braille Converter**: A device that can convert text on an artifacts plaque into braille so that it can be read by a person who is visually impaired. (prob not feasible for us to build though)
 - **Digital Scavenger Hunt**: A device used whilst at the museum that you can take around and attempt to find items, once an item is found tap the device against it, and it will add it to your collection. Completeing your collection can be used for points or rewards based on the museum.
 ### Himanshu
-- **Idea Name 1**: Description
-- **Idea Name 2**: Description
-- **Idea Name 3**: Description
+- **Idea Name 1**: There are feet pedals on the ground and you press it to draw something on the wall in an art museuem.
+- **Idea Name 2**: You become a conductor and you have a stick and you move it around to make music.
+- **Idea Name 3**: You have a flask and you mix "chemicals" to get sounds and visual feedback.
 ### Jason
 - **Projected museum piece**: Projections onto a display can allow users to interact with the item and pick it up. As the user's hands move as they pick it up the projections continue to display on their hands as if the item is in your hand.
 - **Haptic tour guide**: A vibration device possibly around the waist can point a user on a coherent tour around the museum. It would point the user to the next item to go to with directional vibrations.
