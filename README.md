@@ -13,10 +13,10 @@
 - **Idea Name 2**: Description
 - **Idea Name 3**: Description
 ### Jason
-- **Idea Name 1**: Description
-- **Idea Name 2**: Description
-- **Idea Name 3**: Description
+- **Projected museum piece**: Projections onto a display can allow users to interact with the item and pick it up. As the user's hands move as they pick it up the projections continue to display on their hands as if the item is in your hand.
+- **Haptic tour guide**: A vibration device possibly around the waist can point a user on a coherent tour around the museum. It would point the user to the next item to go to with directional vibrations.
+- **Interactive holographic display**: Use the vibrating display to show an museum item but the vibrations can be use to give the rigidity of the item. 
 ### Umad
-- **See it to belive it** An Augmented reality app that visualises extinct animals showing all their characterictis to help vistors really immerse themselves in the experience 
-- **Feel it to belive it**: Touch sensative information boards that would help you feel what type of enviroment the artiffact used to be in or how the skin or characteristics of an animal would feel
-- **Museum Passport**: A device that collects stamps after you have visted and tested your knowledge on the artefacts
+- **See it to believe it** An Augmented reality app that visualises extinct animals showing all their characteristics to help visitors really immerse themselves in the experience 
+- **Feel it to believe it**: Touch sensitive information boards that would help you feel what type of environment the artefact used to be in or how the skin or characteristics of an animal would feel
+- **Museum Passport**: A device that collects stamps after you have visited and tested your knowledge of the artefacts
