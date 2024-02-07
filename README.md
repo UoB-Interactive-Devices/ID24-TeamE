@@ -1,9 +1,9 @@
 # ID24-TeamE
 ## 3 Ideas Each
 ### Jeremy
-- **Idea Name 1**: Description
-- **Idea Name 2**: Description
-- **Idea Name 3**: Description
+- **Immortalise your museum visit**: Visitors can scan artefacts and plaques that they find interesting and at the end of the visit turn it into a cohesive story/painting/comic centred around their unique experience around the museum. Makes use of generative AI and any information the user provides to make it more personal and memorable. (obviously precautions with cultural appropriation or depicting a user on the wrong side of history).
+- **Vibrotactile navigation device / glove / bracelet**: could this be used in a museum to help people stay immersed in their surroundings without having to worry about looking at a map or a screen. Could it be used to help children find their parents and vice-versa? Could buzz if child is a certain distance away and provide navigation via vibration or looking back to a screen.
+- **Museum Drift Table**: Drift table to provide a ludic experience (purely playful / exploratory. Non-utilitarian). It's a coffee table with a small screen with a birdseye view of the uk. You can drift to new places by placing objects around the table to control direction and speed. It doesn't come with a specific goal but does encourage conversations and the act of exploring. Could an adaptation of this be used in museums, potentially with more information on screen about a region and how different exhibits link together?
 ### Liam
 - **Stolen or Not**: A device that you can point at an artifact in a museum and an indicator will simply tell you if that item was stolen or not.
 - **Plaque to Braille Converter**: A device that can convert text on an artifacts plaque into braille so that it can be read by a person who is visually impaired. (prob not feasible for us to build though)
