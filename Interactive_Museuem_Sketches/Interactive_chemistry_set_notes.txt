@@ -1,0 +1,1 @@
+It is a safe and easy way to emulate dangerous chemicals. The flask can contain smoke machine, balloon, speaker, etc. depending on the chemical and when one flask detects another chemical has been poured, a combination of outputs are played.
