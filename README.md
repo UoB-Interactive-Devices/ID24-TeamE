@@ -25,3 +25,5 @@
 - **See it to believe it** An Augmented reality glasses that visualises extinct animals showing all their characteristics to help visitors really immerse themselves in the experience 
 - **Feel it to believe it**: Touch sensitive information boards that would help you feel what type of environment the artefact used to be in or how the skin or characteristics of an animal would feel
 - **Museum Passport**: A device that collects stamps after you have visited and tested your knowledge of the artefacts
+
+- Link to the Miro - https://miro.com/welcomeonboard/UU5Ib3F1VTBDOThuWUtoRzNKbUFjYXYxR01DUnFTRnRUbG8waDhJSjRFck9uVGs0U1ZoMFBndE5UTElLOVZuU3wzNDU4NzY0NTM5OTQxMzAzNjMwfDI=?share_link_id=459235543959
