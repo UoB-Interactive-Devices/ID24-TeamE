@@ -1,8 +1,8 @@
 # ID24-TeamE
 .
 ## TAs ##
-- Primary TA: Mamoru
-- Secondary TA: Jed
+- Primary TA: Sven
+- Secondary TA: Oliver
 
 ## 3 Ideas Each
 ### Jeremy
