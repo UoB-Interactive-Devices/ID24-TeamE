@@ -8,7 +8,7 @@
 Link to the [Miro](https://miro.com/welcomeonboard/UU5Ib3F1VTBDOThuWUtoRzNKbUFjYXYxR01DUnFTRnRUbG8waDhJSjRFck9uVGs0U1ZoMFBndE5UTElLOVZuU3wzNDU4NzY0NTM5OTQxMzAzNjMwfDI=?share_link_id=459235543959)
 
 ## Initital Ideas ##
-[Initital Ideas](/initialIdeas.md)
+Link to our [Initital Ideas](/initialIdeas.md)
 
 
 ## Abstract Draft 1 
