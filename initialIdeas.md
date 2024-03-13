@@ -1,15 +1,3 @@
-# ID24-TeamE
-
-## TAs ##
-- Primary TA: Sven
-- Secondary TA: Oliver
-
-## Miro Link ##
-Link to the [Miro](https://miro.com/welcomeonboard/UU5Ib3F1VTBDOThuWUtoRzNKbUFjYXYxR01DUnFTRnRUbG8waDhJSjRFck9uVGs0U1ZoMFBndE5UTElLOVZuU3wzNDU4NzY0NTM5OTQxMzAzNjMwfDI=?share_link_id=459235543959)
-
-[Initital Ideas] (/initialideas.md)
-
-
 ## 3 Ideas Each
 ### Jeremy
 - **Immortalise your museum visit**: Visitors can scan artefacts and plaques that they find interesting and at the end of the visit turn it into a cohesive story/painting/comic centred around their unique experience around the museum. Makes use of generative AI and any information the user provides to make it more personal and memorable. (obviously precautions with cultural appropriation or depicting a user on the wrong side of history).
