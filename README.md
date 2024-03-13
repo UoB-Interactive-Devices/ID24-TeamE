@@ -7,7 +7,8 @@
 ## Miro Link ##
 Link to the [Miro](https://miro.com/welcomeonboard/UU5Ib3F1VTBDOThuWUtoRzNKbUFjYXYxR01DUnFTRnRUbG8waDhJSjRFck9uVGs0U1ZoMFBndE5UTElLOVZuU3wzNDU4NzY0NTM5OTQxMzAzNjMwfDI=?share_link_id=459235543959)
 
-[Initital Ideas](/initialideas.md)
+## Initital Ideas ##
+[Initital Ideas](/initialIdeas.md)
 
 
 ## 3 Ideas Each
