@@ -11,7 +11,7 @@ Link to the [Miro](https://miro.com/welcomeonboard/UU5Ib3F1VTBDOThuWUtoRzNKbUFjY
 Link to our [Initital Ideas](/initialIdeas.md)
 
 ## Overleaf Link ##
-[Overleaf](/https://www.overleaf.com/2999423539tkydpfbgwjpy#6da4bf)
+Link to our [Overleaf](/https://www.overleaf.com/2999423539tkydpfbgwjpy#6da4bf)
 
 ## Abstract Draft 1 
 The most common way for visually impaired people to navigate a museum is through comprehensive audio descriptions. 
