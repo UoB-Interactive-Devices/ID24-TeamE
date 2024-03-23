@@ -1,3 +1,5 @@
+#include<Hashtable.h>
+
 int motorPin1 = 2;
 int motorPin2 = 3;
 int motorPin3 = 4;
@@ -6,12 +8,45 @@ int motorPin5 = 6;
 int motorPin6 = 7;
 int motors[6] = {motorPin1, motorPin2, motorPin3, motorPin4, motorPin5, motorPin6};
 
+
+
+
+
+
 int aMotors[6] = {1,0,0,0,0,0};
 int bMotors[6] = {1,0,1,0,0,0};
-int cMotors[6] = {0,1,0,0,0,0};
-int dMotors[6] = {0,1,1,0,0,0};
-int eMotors[6] = {0,0,1,0,0,0};
+int cMotors[6] = {1,1,0,0,0,0};
+int dMotors[6] = {1,1,0,1,0,0};
+int eMotors[6] = {1,0,1,0,0,0};
+int fMotors[6] = {1,1,1,0,0,0};
+int gMotors[6] = {1,1,1,1,0,0};
+int hMotors[6] = {1,0,1,1,0,0};
+int iMotors[6] = {0,1,0,1,0,0};
+int jMotors[6] = {0,1,1,1,0,0};
+int kMotors[6] = {1,0,0,0,1,0};
+int lMotors[6] = {1,0,1,0,1,0};
+int mMotors[6] = {1,1,0,0,1,0};
+int nMotors[6] = {1,1,0,1,1,0};
+int oMotors[6] = {1,0,0,1,1,0};
+int pMotors[6] = {1,1,1,0,1,0};
+int qMotors[6] = {1,1,1,1,1,0};
+int rMotors[6] = {1,0,1,1,1,0};
+int sMotors[6] = {0,1,1,0,1,0};
+int tMotors[6] = {0,1,1,1,1,0};
+int uMotors[6] = {1,0,0,0,1,1};
+int vMotors[6] = {1,0,1,0,1,1};
+int wMotors[6] = {0,1,1,1,0,1};
+int xMotors[6] = {1,1,0,0,1,1};
+int yMotors[6] = {1,1,0,1,1,1};
+int zMotors[6] = {1,0,0,1,1,1};
 
+int * brailleLetters[26] = {aMotors, bMotors, cMotors, dMotors, eMotors, fMotors, gMotors, hMotors, iMotors, jMotors, kMotors, lMotors, mMotors, nMotors, oMotors, pMotors, qMotors, rMotors, sMotors, tMotors, uMotors, vMotors, wMotors, xMotors, yMotors, zMotors};
+
+
+// int* keyToBraille(String key){
+//   if key == 
+
+// }
 
 
 
@@ -25,27 +60,16 @@ void setAllMotorsLow(){
 int* decodeLetter(char letter) {
     int *highMotors = new int[6]; // Dynamically allocate memory
 
-    if (letter == 'a') {
+
+    if(letter >= 'a' && letter <= 'z'){
+      int index = letter - 'a';
         for (int i = 0; i < 6; ++i) {
-            highMotors[i] = aMotors[i];
+            highMotors[i] = brailleLetters[index][i];
         }
-    } else if (letter == 'b') {
-        for (int i = 0; i < 6; ++i) {
-            highMotors[i] = bMotors[i];
-        }
-    } else if (letter == 'c') {
-        for (int i = 0; i < 6; ++i) {
-            highMotors[i] = cMotors[i];
-        }
-        }else if (letter == 'd') {
-        for (int i = 0; i < 6; ++i) {
-            highMotors[i] = dMotors[i];
-        }
-      }else if (letter == 'e') {
-        for (int i = 0; i < 6; ++i) {
-            highMotors[i] = eMotors[i];
-        }
-    } else {
+
+    }
+    else if (letter >= '1' && letter <= '6'){
+        highMotors[letter - '1'] = 1;
         // Handle other cases, or return some default value
     }
 
@@ -57,6 +81,9 @@ void cleanup(int* ptr) {
 }
 
 void setup() {
+
+
+
   // put your setup code here, to run once:
   pinMode(motorPin1, OUTPUT);
   pinMode(motorPin2, OUTPUT);
