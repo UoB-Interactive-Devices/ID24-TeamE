@@ -1,0 +1,24 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "cppdbg",
+      "request": "launch",
+      "args": [],
+      "stopAtEntry": false,
+      "externalConsole": true,
+      "cwd": "c:/Users/jerem/Desktop/University/Computer Science/Year 3/Interactive Devices/ID24-TeamE/6 motors, 1 bracelet/6-motors-arduino-code",
+      "program": "c:/Users/jerem/Desktop/University/Computer Science/Year 3/Interactive Devices/ID24-TeamE/6 motors, 1 bracelet/6-motors-arduino-code/build/Debug/outDebug",
+      "MIMode": "gdb",
+      "miDebuggerPath": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,3 +1,11 @@
+// TODO:
+// -Investigate electron one more time
+// -Investigate linking javascript to python.
+// -Investigate python GUI and sound libraries.
+
+
+
+
 //This code handles converting letters recieved from serial into vibrational pulses
 //run this with the corresponding python program (or any program that can send a single char to serial)
 //it's best practice to close Arduino IDE when using the python program.
@@ -24,11 +32,11 @@ int aMotors[6] = {1,0,0,0,0,0};
 int bMotors[6] = {1,0,1,0,0,0};
 int cMotors[6] = {1,1,0,0,0,0};
 int dMotors[6] = {1,1,0,1,0,0};
-int eMotors[6] = {1,0,1,0,0,0};
+int eMotors[6] = {1,0,0,1,0,0};
 int fMotors[6] = {1,1,1,0,0,0};
 int gMotors[6] = {1,1,1,1,0,0};
 int hMotors[6] = {1,0,1,1,0,0};
-int iMotors[6] = {0,1,0,1,0,0};
+int iMotors[6] = {0,1,1,0,0,0};
 int jMotors[6] = {0,1,1,1,0,0};
 int kMotors[6] = {1,0,0,0,1,0};
 int lMotors[6] = {1,0,1,0,1,0};
@@ -56,7 +64,37 @@ int * brailleLetters[26] = {aMotors, bMotors, cMotors, dMotors, eMotors, fMotors
 
 // }
 
+bool serialChecked = false;
 
+
+bool isVowel(char letter){
+  if(letter == 'a' || letter == 'e' || letter == 'i' || letter == 'o' || letter == 'u') return true;
+  else return false;
+}
+
+//regular single pulse vibration of activated motors
+void vibrate(int * motorsConfig){
+        for(int i = 0; i < 6; i++){
+          if(motorsConfig[i] == 1){
+            digitalWrite(motors[i], HIGH);
+            }
+        }
+        delay(PULSE_DURATION);
+}
+
+//double pulsation of activated motors
+void pulsateVibrate(int * motorsConfig){
+  for(int pulseNumber = 0; pulseNumber < 2; pulseNumber++){
+    for(int i = 0; i < 6; i++){
+      if (motorsConfig[i] == 1) digitalWrite(motors[i], HIGH);
+    }
+    delay(PULSE_DURATION / 2);
+    for(int i = 0; i < 6; i++){
+      if (motorsConfig[i] == 1) digitalWrite(motors[i], HIGH);
+    }
+    delay(50);
+  }
+}
 
 //turns all motors off
 void setAllMotorsLow(){
@@ -68,6 +106,8 @@ void setAllMotorsLow(){
 //returns the array indicating which motors should be activated given a number or letter
 int* decodeLetter(char letter) {
     int *highMotors = new int[6]; // Dynamically allocate memory
+
+
 
     //accesses the corresponding letter from alphabet array based on the received letter
     //returns the associated motor configuration
@@ -112,6 +152,17 @@ void loop() {
     setAllMotorsLow();
 
     if (Serial.available() > 0) {
+      if(serialChecked){
+        digitalWrite(motors[0], HIGH);
+        delay(1000);
+        digitalWrite(motors[1], HIGH);
+        delay(1000);
+        digitalWrite(motors[2], HIGH);
+        delay(1000);
+        digitalWrite(motors[3], HIGH);
+        delay(1000);
+        serialChecked = true;
+      }
       //if signal is a number then set the corresponding motor to high
       char command = Serial.read();
       if (command >= '1' && command <= '6'){
@@ -121,13 +172,14 @@ void loop() {
       //if signal is a letter then activate corosponding motor(s)
       else if (command >= 'a' && command <= 'z'){
         int* highMotors = decodeLetter(command);
-        for(int i = 0; i < 6; i++){
-          if(highMotors[i] == 1){
-            digitalWrite(motors[i], HIGH);
 
-          }
+        if(isVowel(command)){
+          pulsateVibrate(highMotors);
         }
-            delay(PULSE_DURATION);
+
+        else{
+          vibrate(highMotors);
+        }
       }
 
     }
