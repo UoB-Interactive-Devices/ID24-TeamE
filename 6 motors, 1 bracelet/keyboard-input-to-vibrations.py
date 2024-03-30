@@ -33,7 +33,7 @@ alphabet['y'] = [1,1,0,1,1,1]
 alphabet['z'] = [1,0,0,1,1,1]
 
 #Windows file system:
-arduino = serial.Serial('COM11', 9600)
+arduino = serial.Serial('/dev/cu.usbmodem101', 9600)
 
 def send_command(command):
     arduino.write(command.encode())

@@ -17,9 +17,9 @@
 
 // int motorPin1 = 2; int motorPin2 = 3; int motorPin3 = 4; int motorPin4 = 5; int motorPin5 = 6; int motorPin6 = 7;
 //configures the output pins to 2X3 Braille grid
-int motorPin1 = 2; int motorPin2 = 3;
-int motorPin3 = 7; int motorPin4 = 4;
-int motorPin5 = 6; int motorPin6 = 5;
+int motorPin1 = 2; int motorPin2 = 5;
+int motorPin3 = 3; int motorPin4 = 6;
+int motorPin5 = 4; int motorPin6 = 7;
 int motors[6] = {motorPin1, motorPin2, motorPin3, motorPin4, motorPin5, motorPin6};
 
 
