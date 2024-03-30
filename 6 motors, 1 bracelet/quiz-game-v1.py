@@ -42,7 +42,11 @@ alphabet['y'] = [1,1,0,1,1,1]
 alphabet['z'] = [1,0,0,1,1,1]
 
 #Windows file system:
-arduino = serial.Serial('/dev/cu.usbmodem101', 9600)
+arduino = serial.Serial('COM11', 9600)
+
+# Mac file system:
+# arduino = serial.Serial('/dev/cu.usbmodem101', 9600)
+
 #this needs changing depending on device and current port in use
 
 
