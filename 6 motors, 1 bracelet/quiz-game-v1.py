@@ -11,6 +11,9 @@ allChars = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n'
 
 print(len(allChars))
 
+
+
+
 alphabet['a'] = [1,0,0,0,0,0]
 alphabet['b'] = [1,0,1,0,0,0]
 alphabet['c'] = [1,1,0,0,0,0]
@@ -110,11 +113,16 @@ def next_question(options, currentAnswer):
     #(re)set all option buttons to default background colour
     set_all_elements_colour(optionButtons, "white")
 
+    selectedChars = []
+    for i in range(len(allChars)):
+        if(toggleAlphabetButtons[i][1]):
+            selectedChars.append(allChars[i])
+
     #randomly 4 new and unique options
     for i in range(len(options)):
-        options[i] = allChars[random.randint(0, len(allChars) - 1)]
+        options[i] = selectedChars[random.randint(0, len(selectedChars) - 1)]
         while(are_there_repeats(options)):
-            options[i] = allChars[random.randint(0, len(allChars) - 1)]
+            options[i] = selectedChars[random.randint(0, len(selectedChars) - 1)]
     
     print(currentAnswer)
 
@@ -147,7 +155,16 @@ def updateOptionButtons(options, currentAnswer):
 def play_letter(letter):
     send_command(letter)
 
+def toggleButton(index):
+    btn = toggleAlphabetButtons[index]
+    toggleAlphabetButtons[index][1] = not toggleAlphabetButtons[index][1]
+    if btn[1]:
+        btn[0].configure(background="lime")
+    else:
+        btn[0].configure(background="pink")
 
+
+    print(toggleAlphabetButtons)
 
 global currentAnswer
 currentAnswer = ['a']#stores the currently acceptable answer(s)
@@ -181,6 +198,52 @@ options = ['a', 'b', 'c', 'd']
 gameStage = tk.Frame(root)
 gameStage.pack()
 # gameStage.configure(background="blue")
+
+
+
+toggleAlphabetContainer = tk.Frame(gameStage)
+toggleAlphabetContainer.pack()
+
+
+#we want to make sure we don't have a single row/column of 26+ symbols so we set a max width
+#and programmatically generate rows and allocate toggle buttons to a row
+maxRowWidth = 10
+
+toggleAlphabetRows = []
+
+print(11//10)
+
+for i in range(len(allChars) // maxRowWidth + 1):
+    row = tk.Frame(toggleAlphabetContainer)
+    toggleAlphabetRows.append(row)
+    row.pack()
+
+print("length:", len(toggleAlphabetRows))
+
+#list of toggles for each letter stored with whether it's enabled or not
+#[button, isAllowed]
+toggleAlphabetButtons = []
+for i in range(len(allChars)):
+    if(i < 10):
+        toggleAlphabetButtons.append(["NOTHING", True])
+    else:
+        toggleAlphabetButtons.append(["NOTHING", False])
+
+
+for i in range(len(allChars)):
+    letter = allChars[i]
+    #append the button to row based on its index
+    if(toggleAlphabetButtons[i][1]):
+        bg = "lime"
+    else:
+        bg = "pink"
+    btn = tk.Button(toggleAlphabetRows[i // maxRowWidth], text=letter, background=bg)
+    btn.pack(side=tk.LEFT)
+    toggleAlphabetButtons[i][0] = btn
+    btn.configure(command= lambda i=i: toggleButton(i))
+
+print(toggleAlphabetButtons)
+
 
 optionButtonsContainer = tk.Frame(root)
 optionButtonsContainer.pack()
