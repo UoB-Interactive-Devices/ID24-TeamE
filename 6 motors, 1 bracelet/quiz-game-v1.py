@@ -42,10 +42,10 @@ alphabet['y'] = [1,1,0,1,1,1]
 alphabet['z'] = [1,0,0,1,1,1]
 
 #Windows file system:
-#arduino = serial.Serial('COM11', 9600)
+arduino = serial.Serial('COM11', 9600)
 
 # Mac file system:
-arduino = serial.Serial('/dev/cu.usbmodem101', 9600)
+# arduino = serial.Serial('/dev/cu.usbmodem101', 9600)
 
 #this needs changing depending on device and current port in use
 
@@ -67,14 +67,14 @@ def key_press(event):
         letterConfiguration = alphabet[key]
         for i in range(len(letterConfiguration)):
             if letterConfiguration[i] == 1:
-                buttons[i].configure(highlightbackground="lightblue")
+                buttons[i].configure(highlightbackground="lightblue", background="lightblue")
     elif key>='1' and key <= '6':
-        buttons[int(key) - 1].configure(highlightbackground="blue")
+        buttons[int(key) - 1].configure(highlightbackground="blue", background="blue")
 
 
 def set_all_elements_colour(elements, colour):
     for i in range(len(elements)):
-        optionButtons[i].configure(highlightbackground=colour)
+        optionButtons[i].configure(highlightbackground=colour, background=colour)
 
 def check_answer(guess, index):
     print("answer check", guess)
@@ -83,10 +83,10 @@ def check_answer(guess, index):
 
     if currentAnswer[0] == guess:
         print("correct")
-        optionButtons[index].configure(highlightbackground="green")
+        optionButtons[index].configure(highlightbackground="green", background="green")
     else:
         print("incorrect")
-        optionButtons[index].configure(highlightbackground="red")
+        optionButtons[index].configure(highlightbackground="red", background="red")
 
 #second version of answer checking uses a boolean as input, this is a different approach I used to assign a button's
 #lambda function depending on whether it corresponds to the correct answer or not. This differs to
@@ -101,10 +101,10 @@ def check_answer2(isCorrect, index):
 
     if isCorrect:
         print("correct")
-        optionButtons[index].configure(highlightbackground="green")
+        optionButtons[index].configure(highlightbackground="green", background="green")
     else:
         print("incorrect")
-        optionButtons[index].configure(highlightbackground="red")
+        optionButtons[index].configure(highlightbackground="red", background="red")
 
 
 def are_there_repeats(lst):
@@ -163,9 +163,9 @@ def toggleButton(index):
     btn = toggleAlphabetButtons[index]
     toggleAlphabetButtons[index][1] = not toggleAlphabetButtons[index][1]
     if btn[1]:
-        btn[0].configure(highlightbackground="lime")
+        btn[0].configure(highlightbackground="lime", background="lime")
     else:
-        btn[0].configure(highlightbackground="pink")
+        btn[0].configure(highlightbackground="pink", background="pink")
 
 
     print(toggleAlphabetButtons)
@@ -241,7 +241,7 @@ for i in range(len(allChars)):
         bg = "lime"
     else:
         bg = "pink"
-    btn = tk.Button(toggleAlphabetRows[i // maxRowWidth], text=letter, highlightbackground=bg)
+    btn = tk.Button(toggleAlphabetRows[i // maxRowWidth], text=letter, highlightbackground=bg, background=bg)
     btn.pack(side=tk.LEFT)
     toggleAlphabetButtons[i][0] = btn
     btn.configure(command= lambda i=i: toggleButton(i))
