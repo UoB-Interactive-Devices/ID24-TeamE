@@ -42,10 +42,10 @@ alphabet['y'] = [1,1,0,1,1,1]
 alphabet['z'] = [1,0,0,1,1,1]
 
 #Windows file system:
-arduino = serial.Serial('COM11', 9600)
+#arduino = serial.Serial('COM11', 9600)
 
 # Mac file system:
-# arduino = serial.Serial('/dev/cu.usbmodem101', 9600)
+arduino = serial.Serial('/dev/cu.usbmodem101', 9600)
 
 #this needs changing depending on device and current port in use
 
@@ -58,23 +58,23 @@ def send_command(command):
 def key_press(event):
     #set all buttons on GUI to default white (unactivated)
     for i in range(len(buttons)):
-        buttons[i].configure(background="white")
+        buttons[i].configure(highlightbackground="white")
     key = event.char
     send_command(key)
 
-    #based on what char was sent, change the background of the corresponding motors
+    #based on what char was sent, change the highlightbackground of the corresponding motors
     if key >= 'a' and key <= 'z':
         letterConfiguration = alphabet[key]
         for i in range(len(letterConfiguration)):
             if letterConfiguration[i] == 1:
-                buttons[i].configure(background="lightblue")
+                buttons[i].configure(highlightbackground="lightblue")
     elif key>='1' and key <= '6':
-        buttons[int(key) - 1].configure(background="blue")
+        buttons[int(key) - 1].configure(highlightbackground="blue")
 
 
 def set_all_elements_colour(elements, colour):
     for i in range(len(elements)):
-        optionButtons[i].configure(background=colour)
+        optionButtons[i].configure(highlightbackground=colour)
 
 def check_answer(guess, index):
     print("answer check", guess)
@@ -83,10 +83,10 @@ def check_answer(guess, index):
 
     if currentAnswer[0] == guess:
         print("correct")
-        optionButtons[index].configure(background="green")
+        optionButtons[index].configure(highlightbackground="green")
     else:
         print("incorrect")
-        optionButtons[index].configure(background="red")
+        optionButtons[index].configure(highlightbackground="red")
 
 #second version of answer checking uses a boolean as input, this is a different approach I used to assign a button's
 #lambda function depending on whether it corresponds to the correct answer or not. This differs to
@@ -101,10 +101,10 @@ def check_answer2(isCorrect, index):
 
     if isCorrect:
         print("correct")
-        optionButtons[index].configure(background="green")
+        optionButtons[index].configure(highlightbackground="green")
     else:
         print("incorrect")
-        optionButtons[index].configure(background="red")
+        optionButtons[index].configure(highlightbackground="red")
 
 
 def are_there_repeats(lst):
@@ -114,7 +114,7 @@ def are_there_repeats(lst):
 def next_question(options, currentAnswer):
     print("NEXT")
 
-    #(re)set all option buttons to default background colour
+    #(re)set all option buttons to default highlightbackground colour
     set_all_elements_colour(optionButtons, "white")
 
     selectedChars = []
@@ -163,9 +163,9 @@ def toggleButton(index):
     btn = toggleAlphabetButtons[index]
     toggleAlphabetButtons[index][1] = not toggleAlphabetButtons[index][1]
     if btn[1]:
-        btn[0].configure(background="lime")
+        btn[0].configure(highlightbackground="lime")
     else:
-        btn[0].configure(background="pink")
+        btn[0].configure(highlightbackground="pink")
 
 
     print(toggleAlphabetButtons)
@@ -201,7 +201,7 @@ options = ['a', 'b', 'c', 'd']
 #container for all quiz/game elements
 gameStage = tk.Frame(root)
 gameStage.pack()
-# gameStage.configure(background="blue")
+# gameStage.configure(highlightbackground="blue")
 
 
 
@@ -241,7 +241,7 @@ for i in range(len(allChars)):
         bg = "lime"
     else:
         bg = "pink"
-    btn = tk.Button(toggleAlphabetRows[i // maxRowWidth], text=letter, background=bg)
+    btn = tk.Button(toggleAlphabetRows[i // maxRowWidth], text=letter, highlightbackground=bg)
     btn.pack(side=tk.LEFT)
     toggleAlphabetButtons[i][0] = btn
     btn.configure(command= lambda i=i: toggleButton(i))
