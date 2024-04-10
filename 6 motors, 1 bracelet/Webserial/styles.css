@@ -1,0 +1,163 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html{
+    --darkBG: black;
+    --lightText: white;
+    font-size: 20px;
+}
+
+body{
+    width:100%;
+    height:100vh;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    gap: 3em;
+    padding: 2em;
+}
+
+button{
+    padding:0.5em;
+    cursor: pointer;
+    display: block;
+}
+
+.motor-buttons-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap:2em;
+    width: 100%;
+}
+
+.motor-buttons-list, .braille-representation{
+    width: fit-content;
+    list-style:none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2em
+}
+
+.motor-button, .braille-dot{
+    border: none;
+    aspect-ratio: 1/1;
+    background: rgb(182, 182, 182);
+    width: 3em;
+    text-align: center;
+
+    padding:1em;
+    border-radius: 50%;
+}
+
+.motor-button:hover{
+    scale:1.1;
+    cursor: pointer;
+    background: var(--darkBG);
+    color: var(--lightText);
+    transition: 0.25s;
+}
+
+.motor-button.active{
+    background: var(--darkBG);
+    color: var(--lightText);
+}
+
+.current-symbol{
+    width: 100%;
+    font-size: 4em;
+    text-align: center;
+}
+
+.quiz-stage{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    border: 3px solid black;
+    padding:2em;
+    gap:2em;
+}
+
+.quiz-stage button{
+    width: fit-content;
+    min-width: 5em;
+}
+
+.quiz-controls{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap:1em;
+}
+
+.quiz-control-buttons{
+    display: flex;
+    gap: 1em;
+}
+
+.quiz-select-symbols-container{
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    align-items: center;
+    justify-content: center;
+    gap:0.25em;
+}
+
+.guess-list{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap:5em;
+}
+
+.guess{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap:1em;
+}
+
+.include{
+    background: rgba(135, 206, 250, 0.524);
+}
+
+.correct{
+    background:green;
+}
+
+.incorrect{
+    background:red;
+}
+
+.braille-representation{
+    width: fit-content;
+    list-style:none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2em
+}
+
+.braille-dot{
+    border: none;
+    aspect-ratio: 1/1;
+    background: rgb(182, 182, 182);
+    width: 1em;
+    text-align: center;
+
+    padding:1em;
+    border-radius: 50%;
+}
+
+.braille-dot.active{
+    background: var(--darkBG);
+}
+

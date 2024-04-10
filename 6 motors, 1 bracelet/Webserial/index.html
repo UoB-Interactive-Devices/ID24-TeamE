@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibraille</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <button onclick="clickConnect()">Connect to Bracelet</button>
+    <div class="motor-buttons-container">
+        <ul class="motor-buttons-list">
+            <li><button id="motor1" class="motor-button" onclick="handleMotorPress('1')">1</button></li>
+            <li><button id="motor2" class="motor-button" onclick="handleMotorPress('2')">2</button></li>
+            <li><button id="motor3" class="motor-button" onclick="handleMotorPress('3')">3</button></li>
+            <li><button id="motor4" class="motor-button" onclick="handleMotorPress('4')">4</button></li>
+            <li><button id="motor5" class="motor-button" onclick="handleMotorPress('5')">5</button></li>
+            <li><button id="motor6" class="motor-button" onclick="handleMotorPress('6')">6</button></li>
+        </ul>
+        <p id="current-symbol" class="current-symbol"></p>
+    </div>
+    <div class="quiz-stage">
+        <div class="quiz-instructions">
+            <p>Enable the letters you've learnt so far below</p>
+            <p>Press "play letter" to send the letter to your bracelet</p>
+
+            <p>Keep guessing from the quiz options until you get it right and then press "next letter"</p>
+        </div>
+        <div id="quiz-select-symbols-container" class="quiz-select-symbols-container"></div>
+        <div class="quiz-controls">
+            <p id="quiz-score" class="quiz-score">Score:</p>
+            <div class="quiz-control-buttons">
+                <button aria-label="Play letter" onclick="handleQuizPlaySymbolPress()">Play Letter</button>
+                <button aria-label="Next letter" onclick="handleQuizNextSymbolPress()">Next Letter</button>
+            </div>
+        </div>
+        <div class="guess-buttons container">
+            <ul class="guess-list">
+                <li class="guess">
+                    <button aria-label="Select letter" class="guess-button">A</button>
+                    <ul class="braille-representation">
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                    </ul>
+                </li>
+                <li class="guess">
+                    <button aria-label="Select letter" class="guess-button">A</button>
+                    <ul class="braille-representation">
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                    </ul>
+                </li>
+                <li class="guess">
+                    <button aria-label="Select letter" class="guess-button">A</button>
+                    <ul class="braille-representation">
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                    </ul>
+                </li>
+                <li class="guess">
+                    <button aria-label="Select letter" class="guess-button">A</button>
+                    <ul class="braille-representation">
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
