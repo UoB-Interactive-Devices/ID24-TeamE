@@ -8,7 +8,6 @@ html{
     --darkBG: black;
     --lightText: white;
     --light-grey: rgb(196, 196, 196);
-    --evaluation-progess: 0.7;
     font-size: 20px;
 }
 
@@ -108,7 +107,7 @@ button{
     justify-content: center;
 
     outline: 3px solid black;
-    /* padding:2em; */
+    padding:2em;
     gap:2em;
 }
 
@@ -196,10 +195,37 @@ button{
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    gap:3em;
 }
 
 #evaluation-stage.hidden{
     display: none;
+}
+
+.eval-question-no-container{
+    display: flex;
+    gap: 0.5em;
+}
+
+.eval-question-no-container input{
+    width: 3em;
+}
+
+#evaluation-setup{
+    display: flex;
+    flex-direction: column;
+    gap:1em;
+}
+
+#evaluation-setup.hidden{
+    display: none;
+}
+
+.form-factor-buttons{
+    display: flex;
+    gap:1em;
+    align-items: center;
 }
 
 .progress-container{
@@ -216,7 +242,8 @@ button{
 }
 
 .progress-bar{
-    width: calc(var(--evaluation-progess) * 100%);
+    --evaluation-progress: 0;
+    width: calc(var(--evaluation-progress) * 100%);
     height:inherit;
     background-color: green;
     border-radius: 10px 0px 0px 10px;
@@ -224,7 +251,92 @@ button{
     transition: 2s;
 }
 
+#eval-test-container{
+    display: flex;
+    flex-direction: column;
+    gap:2em;
 
+    align-items: center;
+}
+
+#eval-test-container.hidden{
+    display:none;
+}
+
+#eval-guess-list{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    list-style: none;
+    gap:3em;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.eval-controls{
+    display: flex;
+    gap:1em;
+}
+
+.eval-controls button.unpressable{
+    cursor:not-allowed;
+    color: grey;
+    border: 2px dotted grey;
+    opacity: 0.8;
+}
+
+.eval-rep{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap:1em;
+}
+
+.eval-guess-button.correct{
+    background-color: green;
+}
+
+.eval-guess-button.incorrect{
+    background-color: red;
+}
+
+.eval-rep button{
+    width: 5em;
+}
+.eval-rep-list{
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2em;
+}
+
+.eval-rep.hidden{
+    display: none;
+}
+
+.eval-dot{
+    width: 2em;
+    height: 2em;
+    background: var(--light-grey);
+    border-radius: 50%;
+
+    transition: 0.1s ease-in;
+}
+
+.eval-dot.active{
+    width: 2em;
+    height: 2em;
+    background:var(--darkBG);
+    border-radius: 50%;
+}
+
+#download-participant-data{
+    display: block;
+}
+
+#download-participant-data.hidden{
+    display: none;
+}
 
 
 /* FREEPLAY */

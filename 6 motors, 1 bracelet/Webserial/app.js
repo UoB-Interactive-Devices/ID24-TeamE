@@ -1,6 +1,7 @@
 console.log("hi");
 'use strict';
 
+//serial I/O stuff
 let port;
 let reader;
 let inputDone;
@@ -11,6 +12,7 @@ let outputStream;
 let mode = "learn"
 
 
+//maps a symbol to a motor activation configuration
 const alphabet =  {
       "a": [1, 0, 0, 0, 0, 0],
       "b": [1, 1, 0, 0, 0, 0],
@@ -46,7 +48,7 @@ const alphabet =  {
       "motor6": [0, 0, 0, 0, 0, 1]
     }
 
-
+//converts from old motor grid layout to conventional Braille layout
 conversion = {
     0:0,
     1:3,
@@ -58,6 +60,7 @@ conversion = {
 
 const currentSymbol = document.getElementById("current-symbol");
 
+//Model for storing data in the quiz mode
 let quizModel = {
     "question": 1,
     "score": 0,
@@ -73,23 +76,47 @@ let quizModel = {
     "incorrectGuesses": []
 }
 
+//Model for the evaluation mode
 let evaluationModel = {
-    previousParticipants:[],
-    currentParticipant:{
-        participantID: "participant ",
-        noQuestions: 15,
-        currentQuestionNo: 0,
-        previousAttempts: [],
-        questions:[]
+    "previousParticipants":[],
+    "currentParticipant":{
+        "participantID": "participant ",
+        "noQuestions": 15,
+        "currentQuestionNo": 0,
+        "previousAttempts": [],
+        "currentIncorrect": [],
+        "currentCorrect" :[],
+        "questions":[],
+        "formFactor": "",
+        "time": Date.now()
     },
-    optionsPerGuess: 4,
-    allSymbols: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
+    "noReplays" : 3,
+    "optionsPerGuess": 5,
+    "optionsPerGuessMax": 6,
+    "allSymbols": ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
     'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'],
+    guessesGUI: []
 }
 
+console.log(document.body);
+
+function setFormFactor(ff){
+    evaluationModel.currentParticipant.formFactor = ff;
+}
 
 //create new questions and store them in the model, then update GUI to start the evaluation
 function startNewEvaluation(){
+        if(evaluationModel.currentParticipant.formFactor == ""){
+            window.alert("please select the relevant form factor of your wearable");
+            return;
+        }
+        if(document.getElementById("participant-id-input").value == ""){
+            window.alert("please enter a new participant ID");
+            return;
+        }
+        evaluationModel.currentParticipant.participantID = document.getElementById("participant-id-input").value;
+        evaluationModel.currentParticipant.time = Date.now();
+        evaluationModel.currentParticipant.noQuestions = document.getElementById("eval-question-no-input").value;
         for(let i = 0; i<evaluationModel.currentParticipant.noQuestions * 10; i++){
             const nextOptions = [];
             //keep adding options randomly from the pool of allowed symbols (pick without replacement)
@@ -105,11 +132,221 @@ function startNewEvaluation(){
 
             const newQuestion = {questionNo: i+1,
                                  options: newOptions,
-                                 answer: newAnswer}
+                                 answer: newAnswer,
+                                 replaysRemaining: evaluationModel.noReplays}
 
             evaluationModel.currentParticipant.questions.push(newQuestion);
         }
-        console.log(evaluationModel);
+
+         
+        const guessList = document.getElementById("eval-guess-list")
+        //make the options elements.
+        for(let i = 0; i < evaluationModel.optionsPerGuessMax; i++){
+
+            const guess = document.createElement("li");
+            guess.classList.add("eval-rep");
+            if(i >= evaluationModel.optionsPerGuess){
+                guess.classList.add("hidden")
+            }
+            const guessButton = document.createElement("button");
+            guessButton.onclick = function(e){
+                makeGuess(e.target.textContent);
+            }
+            guessButton.classList.add("eval-guess-button")
+            const evalRepList = document.createElement("ul");
+            evalRepList.classList.add("eval-rep-list")
+            for(let j = 0; j < 6; j++){
+                const dot = document.createElement("div");
+                dot.classList.add("eval-dot");
+                evalRepList.appendChild(dot);
+            }
+            guess.appendChild(guessButton);
+            guess.appendChild(evalRepList);
+            guessList.appendChild(guess);
+
+            evaluationModel.guessesGUI.push(guess);
+        }
+        console.log("new evaluation:", evaluationModel);
+
+        updateEvaluationGui();
+        document.getElementById("evaluation-setup").classList.add("hidden");
+        document.getElementById("eval-test-container").classList.remove("hidden");
+
+}
+
+function nextEvalQuestion(){
+    if(evaluationModel.currentParticipant.currentQuestionNo == evaluationModel.currentParticipant.noQuestions){
+        return;
+    }
+
+    let currentParticipant = evaluationModel.currentParticipant;
+    if(currentParticipant.currentCorrect.length > 0){
+        console.log("Ready to Move on");
+        currentParticipant.previousAttempts.push({
+            "answer": JSON.parse(JSON.stringify(currentParticipant.questions[evaluationModel.currentParticipant.currentQuestionNo].answer)),
+            "incorrect": JSON.parse(JSON.stringify(currentParticipant.currentIncorrect)),
+            "isCorrect": currentParticipant.currentIncorrect == 0
+        })
+
+        currentParticipant.currentCorrect = [];
+        currentParticipant.currentIncorrect = [];
+
+        evaluationModel.currentParticipant.currentQuestionNo = evaluationModel.currentParticipant.currentQuestionNo + 1;
+
+        updateEvaluationGui();
+    }
+    else{
+        console.log("not ready to move on");
+    }
+
+}
+
+function updateEvalOption(option, index){
+    const optionStr = option;
+    console.log("option for eval GUI update: ", option);
+    evaluationModel.guessesGUI[index].getElementsByTagName("button")[0].textContent = option;
+    evaluationModel.guessesGUI[index].getElementsByTagName("button")[0].onclick = () => makeEvalGuess(optionStr);
+
+    for(let i = 0; i < 6; i++){
+        evaluationModel.guessesGUI[index].getElementsByClassName("eval-dot")[i].classList.remove("active");
+        if(alphabet[option][conversion[i]] == 1){
+            evaluationModel.guessesGUI[index].getElementsByClassName("eval-dot")[i].classList.add("active");
+        }
+    }
+}
+
+function playEvalLetter(){
+    let currentQuestionNo = evaluationModel.currentParticipant.currentQuestionNo;
+
+
+    if(evaluationModel.currentParticipant.questions[currentQuestionNo].replaysRemaining <= 0 ){
+        window.alert("Out of replays for this question, please make a guess.");
+        return;
+    }
+    console.log(evaluationModel.currentParticipant.questions[currentQuestionNo].answer);
+    evaluationModel.currentParticipant.questions[currentQuestionNo].replaysRemaining -= 1;
+    if(evaluationModel.currentParticipant.questions[currentQuestionNo].replaysRemaining <= 0){
+        document.getElementById("eval-play-letter").classList.add("unpressable");
+    }
+    
+    document.getElementById("eval-play-letter").textContent = `Replay letter - ${evaluationModel.currentParticipant.questions[currentQuestionNo].replaysRemaining}/${evaluationModel.noReplays} left`
+
+    handleCharacterSend(evaluationModel.currentParticipant.questions[currentQuestionNo].answer)
+
+    console.log("play Letter pressed")
+    console.log(evaluationModel.currentParticipant.questions[currentQuestionNo]);
+
+}
+
+function makeEvalGuess(guess){
+    console.log("Making guess:", guess);
+    console.log("guess was made: ", guess)
+
+    let currentParticipant = evaluationModel.currentParticipant;
+    let questionNo = currentParticipant.currentQuestionNo;
+    let currentQuestion = currentParticipant.questions[questionNo];
+    let answer = currentQuestion.answer;
+
+    if(currentParticipant.currentCorrect.length > 0){
+        //do nothing
+    }
+    else{
+        const buttons = document.getElementsByClassName("eval-guess-button");
+        if(guess == answer){
+            console.log("Correct", buttons);
+            currentParticipant.currentCorrect.push(answer);
+            for(let i = 0; i < 6; i++){
+                if(buttons[i]){
+                    if(buttons[i].textContent == answer){
+                        buttons[i].classList.add("correct");
+                    }
+                }
+            }
+            document.getElementById("eval-next").classList.remove("unpressable");
+        }
+        else{
+            console.log("incorrect");
+            currentParticipant.currentIncorrect.push(guess);
+            for(let i = 0; i < 6; i++){
+                if(buttons[i]){
+                    if(buttons[i].textContent == guess){
+                        buttons[i].classList.add("incorrect");
+                    }
+                }
+            }
+        }
+    }
+
+    console.log("Current participant", currentParticipant);
+
+
+}
+
+function copyObject(obj){
+    return JSON.parse(JSON.stringify(obj));
+}
+
+function handleParticipantDownload(){
+    const previousParticipants = copyObject(evaluationModel.previousParticipants);
+
+    const totalQuestions = evaluationModel.currentParticipant.previousAttempts.length;
+    const totalCorrect = evaluationModel.currentParticipant.previousAttempts.filter(a => a.isCorrect).length;
+
+    const newParticipant = {
+        participantID: evaluationModel.currentParticipant.participantID,
+        date: evaluationModel.currentParticipant.date,
+        formFactor: evaluationModel.currentParticipant.formFactor,
+        answerHistory: evaluationModel.currentParticipant.previousAttempts,
+        totalQuestions: totalQuestions,
+        totalCorrect: totalCorrect,
+        totalIncorrect: totalQuestions - totalCorrect,
+        comments: ""
+    }
+
+    previousParticipants.push(newParticipant);
+
+    downloadObjectAsJson(previousParticipants, "User Evaluation ALL as of " + Date.UTC());
+    downloadObjectAsJson(newParticipant, "User Evaluation of " + newParticipant.participantID);
+
+}
+
+function updateEvaluationGui(){
+    //update choices
+    //update play letter button
+    let currentQuestionNo = evaluationModel.currentParticipant.currentQuestionNo;
+    document.getElementById("eval-play-letter").textContent="Play Letter"
+
+    if (currentQuestionNo >= evaluationModel.currentParticipant.noQuestions){
+        document.getElementById("download-participant-data").classList.remove("hidden");
+    }
+
+    console.log("current Q", currentQuestionNo)
+    let currentQuestion = evaluationModel.currentParticipant.questions[currentQuestionNo];
+    let currentOptions = currentQuestion.options;
+    console.log("current options:", currentOptions);
+    for(let i = 0; i < currentOptions.length; i++){
+        updateEvalOption(currentOptions[i], i);
+
+    }
+
+    document.getElementById("eval-next").classList.add("unpressable");
+    document.getElementById("eval-play-letter").classList.remove("unpressable");
+
+
+
+    document.getElementById("current-eval-question-label").textContent = "Question " + evaluationModel.currentParticipant.currentQuestionNo + "/" + evaluationModel.currentParticipant.noQuestions;
+
+    const buttons = document.getElementsByClassName("eval-guess-button");
+
+    for(let i = 0; i < evaluationModel.optionsPerGuessMax; i++){
+        if(buttons[i]){
+                buttons[i].classList.remove("incorrect");
+                buttons[i].classList.remove("correct");
+        }
+    }
+    
+
+    document.getElementById("progress-bar").style.setProperty("--evaluation-progress", (evaluationModel.currentParticipant.currentQuestionNo/evaluationModel.currentParticipant.noQuestions));
 }
 
 const packRadio = document.getElementById("pack-radio");
@@ -159,7 +396,7 @@ customAlphabetUpload.addEventListener("change", async function(e){
             for(let i =0; i<6; i++){
                 const b = document.createElement("li");
                 b.classList.add("custom-alphabet-braille-dot");
-                if(symbol.activations[i] == 1){
+                if(symbol.activations[conversion[i]] == 1){
                     b.classList.add("active");
                 }
                 customRepList.appendChild(b);
@@ -206,6 +443,10 @@ async function parseJsonFile(file){
 
 //hide all game stages except new mode choice
 function changeMode(newmode){
+    if(port==null){
+        window.alert("please connect a device before leaving calibration mode");
+        return
+    }
     let allStages = stages.allStages;
     console.log("all stages", Object.keys(allStages));
     console.log(allStages["quiz"].classList)
@@ -280,11 +521,19 @@ function packConfigToChar(activations){
     return packedChar;
 }
 
+function convertActivations(activations){
+    const convertedActivations = [0,0,0,0,0,0];
+    for(let i = 0; i<activations.length; i++){
+        convertedActivations[conversion[i]] = activations[i];
+    }
+    return convertedActivations
+}
+
 function handleAddNewSymbol(){
     let name = customAlphabetInput.value;
     customAlphabetModel.alphabet.push({
         "name": name,
-        "activations": JSON.parse(JSON.stringify(customAlphabetModel.activations))
+        "activations": JSON.parse(JSON.stringify(convertActivations(customAlphabetModel.activations)))
     })
 
 
@@ -347,10 +596,16 @@ function handleCustomCharacterSend(activations){
         return;
     }
     else{
-        let packedChar = packConfigToChar(activations);
+        const convertedActivations = [0,0,0,0,0,0];
+        for(let i =0; i< activations.length; i++){
+            convertedActivations[conversion[i]] = activations[i];
+        }
+        let packedChar = packConfigToChar(convertedActivations);
+        // let packedChar = packConfigToChar(activations);
+
         if(port!=null){
             writeToStream(packedChar);
-            console.log("Sending activation", activations, " to bracelet as packed char", packedChar);
+            console.log("Sending activation", convertedActivations, " to bracelet as packed char", packedChar);
         }
     }
 }

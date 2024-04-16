@@ -111,11 +111,60 @@
 
     <div id="evaluation-stage" class="evaluation-stage hidden">
 
-    Evaluate me
+    <div id="evaluation-setup">
+        <div class="form-factor-buttons">
+            <label for="">Form Factor:</label>
+            <button class="form-factor-button" onclick="setFormFactor('2-bracelet')">2 Bracelets</button>
+            <button class="form-factor-button" onclick="setFormFactor('sleeve')">Sleeve</button>
+        </div>
+        <div class="participant-id">
+            <label for="">Participant ID:</label>
+            <input id="participant-id-input" type="text" name="" id="">
+        </div>
+        <div class="eval-question-no-container">
+            <label for="eval-question-no-input">Number of Questions:</label>
+            <input type="number" name="" id="eval-question-no-input" value="15">
+        </div>
 
-    <div class="progress-container">
-        <div class="progress-bar"></div>
+        <button id="start-evaluation-button" onclick="startNewEvaluation()">Start User Test</button>
     </div>
+
+
+    <div id="eval-test-container" class="hidden">
+        <label id="current-eval-question-label">Question 1 / 15</label>
+        <div class="progress-container">
+            <div id="progress-bar"  width="0px" class="progress-bar"></div>
+    </div>
+
+    <div class="eval-controls">
+        <button id="eval-play-letter" onclick="playEvalLetter()">Play Letter</button>
+        <button id="eval-next" onclick="nextEvalQuestion()">Next Question</button>
+    </div>
+
+
+
+
+        <div id="eval-guess-container">
+            <ul id="eval-guess-list">
+                <!-- These are generated programmatically and will be structured as followed -->
+                <!-- <li class="guess">
+                    <button aria-label="Select letter" class="guess-button">A</button>
+                    <ul class="braille-representation">
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                    </ul>
+                </li> -->
+            </ul>
+        </div>
+
+        <button class="hidden" id="download-participant-data" onclick="handleParticipantDownload()">Download Data</button>
+
+    </div>
+
 
     </div>
 
