@@ -39,7 +39,7 @@ def send_command(command):
     arduino.write(command.encode())
 
 #this runs when a key is pressed
-    #sends signal to arduino via serial or what char was pressed (lowercase letter or digit)
+#sends signal to arduino via serial or what char was pressed (lowercase letter or digit)
 def key_press(event):
     #set all buttons on GUI to default white (unactivated)
     for i in range(len(buttons)):

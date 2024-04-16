@@ -152,7 +152,7 @@ void loop() {
     setAllMotorsLow();
 
     if (Serial.available() > 0) {
-      if(serialChecked){
+      if(false){
         digitalWrite(motors[0], HIGH);
         delay(1000);
         digitalWrite(motors[1], HIGH);

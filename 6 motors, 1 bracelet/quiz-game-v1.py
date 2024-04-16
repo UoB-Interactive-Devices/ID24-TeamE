@@ -113,7 +113,6 @@ def are_there_repeats(lst):
 #sets up the next question by choosing 4 random letters and selecting 1 as the correct answer
 def next_question(options, currentAnswer):
     print("NEXT")
-
     #(re)set all option buttons to default highlightbackground colour
     set_all_elements_colour(optionButtons, "white")
 
@@ -215,7 +214,7 @@ maxRowWidth = 10
 
 toggleAlphabetRows = []
 
-print(11//10)
+
 
 for i in range(len(allChars) // maxRowWidth + 1):
     row = tk.Frame(toggleAlphabetContainer)
