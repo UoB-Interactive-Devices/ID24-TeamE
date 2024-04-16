@@ -7,19 +7,44 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <button onclick="clickConnect()">Connect to Bracelet</button>
-    <div class="motor-buttons-container">
-        <ul class="motor-buttons-list">
-            <li><button id="motor1" class="motor-button" onclick="handleMotorPress('1')">1</button></li>
-            <li><button id="motor2" class="motor-button" onclick="handleMotorPress('2')">2</button></li>
-            <li><button id="motor3" class="motor-button" onclick="handleMotorPress('3')">3</button></li>
-            <li><button id="motor4" class="motor-button" onclick="handleMotorPress('4')">4</button></li>
-            <li><button id="motor5" class="motor-button" onclick="handleMotorPress('5')">5</button></li>
-            <li><button id="motor6" class="motor-button" onclick="handleMotorPress('6')">6</button></li>
-        </ul>
-        <p id="current-symbol" class="current-symbol"></p>
+
+
+    <div id="calibration-stage" class="calibration-stage">
+        <h2>Calibration</h2>
+        <div class="serial-settings">
+            Serial Mode:
+            <input type="radio" id="pack-radio" name="serialMode" value="pack" checked="true">
+            <label for="html">Packing</label><br>
+            <input type="radio" id="direct-radio" name="serialMode" value="direct">
+            <label for="css">Direct</label><br>
+    
+        </div>
+        <button onclick="clickConnect()">Connect to Bracelet</button>
+        <div class="motor-buttons-container">
+            <ul class="motor-buttons-list">
+                <li><button id="motor1" class="motor-button" onclick="handleMotorPress('1')">1</button></li>
+                <li><button id="motor4" class="motor-button" onclick="handleMotorPress('4')">4</button></li>
+                <li><button id="motor2" class="motor-button" onclick="handleMotorPress('2')">2</button></li>
+                <li><button id="motor5" class="motor-button" onclick="handleMotorPress('5')">5</button></li>
+                <li><button id="motor3" class="motor-button" onclick="handleMotorPress('3')">3</button></li>
+                <li><button id="motor6" class="motor-button" onclick="handleMotorPress('6')">6</button></li>
+            </ul>
+            <p id="current-symbol" class="current-symbol">-</p>
+        </div>
+        <div class="instuctions">
+            <p>Click a numbered motor to activate the corresponding vibration on your bracelet.</p>
+            <p>Use keyboard letters a-z to activate their corresponding braille patterns</p>
+        </div>
     </div>
-    <div class="quiz-stage">
+
+    <div class="modes-container">
+        <button onclick="(changeMode('quiz'))">Quiz</button>
+        <button onclick="(changeMode('evaluation'))">Evaluation</button>
+        <button onclick="(changeMode('freeplay'))">Freeplay</button>
+    </div>
+
+    <div id="quiz-stage" class="quiz-stage hidden">
+        <h2>Quiz</h2>
         <div class="quiz-instructions">
             <p>Enable the letters you've learnt so far below</p>
             <p>Press "play letter" to send the letter to your bracelet</p>
@@ -83,6 +108,51 @@
             </ul>
         </div>
     </div>
+
+    <div id="evaluation-stage" class="evaluation-stage hidden">
+
+    Evaluate me
+
+    <div class="progress-container">
+        <div class="progress-bar"></div>
+    </div>
+
+    </div>
+
+    <div id="freeplay-stage" class="freeplay-stage hidden">
+        <h2>Freeplay</h2>
+        This Feature currently doesn't work but i know how to fix it and will. Not a priority
+        <p>Create new patterns to send to your bracelet and build your own vibrational vocabulary</p>
+        <div class="custom-alphabet-builder">
+            <ul class="custom-braille-representation">
+                <li><button class="custom-braille-dot" id="custom-braille-dot1" onclick="toggleCustomBrailleDot(1)"></button></li>
+                <li><button class="custom-braille-dot" id="custom-braille-dot2" onclick="toggleCustomBrailleDot(2)"></button></li>
+                <li><button class="custom-braille-dot" id="custom-braille-dot3" onclick="toggleCustomBrailleDot(3)"></button></li>
+                <li><button class="custom-braille-dot" id="custom-braille-dot4" onclick="toggleCustomBrailleDot(4)"></button></li>
+                <li><button class="custom-braille-dot" id="custom-braille-dot5" onclick="toggleCustomBrailleDot(5)"></button></li>
+                <li><button class="custom-braille-dot" id="custom-braille-dot6" onclick="toggleCustomBrailleDot(6)"></button></li>
+            </ul>
+            <button id="add-custom-alphabet-button" onclick="playNewSymbol()">Send Vibrations to bracelet</button>
+
+            <div class="naming-container">
+                <label for="cutstom-alphabet-input">Name this pattern:</label>
+                <input id="cutstom-alphabet-input" type="">
+                <button id="add-custom-alphabet-button" onclick="handleAddNewSymbol()">Add to Vocabulary List</button>
+            </div>
+
+        </div>
+        <h3>Your Vibration Vocabulary:</h3>
+        <button onclick="handleAlphabetDownload()">Download Your List</button>
+
+        <div class="upload-custom-alphabet">
+            <label for="file">Upload Vocab:</label>
+            <input id="file" name="file" type="file" />
+        </div>
+
+        <ul id="custom-alphabet-list" class="custom-alphabet-list">
+        </ul>
+    </div>
+
     <script src="app.js"></script>
 </body>
 </html>

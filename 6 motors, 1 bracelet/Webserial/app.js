@@ -13,31 +13,31 @@ let mode = "learn"
 
 const alphabet =  {
       "a": [1, 0, 0, 0, 0, 0],
-      "b": [1, 0, 1, 0, 0, 0],
-      "c": [1, 1, 0, 0, 0, 0],
-      "d": [1, 1, 0, 1, 0, 0],
-      "e": [1, 0, 0, 1, 0, 0],
-      "f": [1, 1, 1, 0, 0, 0],
-      "g": [1, 1, 1, 1, 0, 0],
-      "h": [1, 0, 1, 1, 0, 0],
-      "i": [0, 1, 1, 0, 0, 0],
-      "j": [0, 1, 1, 1, 0, 0],
-      "k": [1, 0, 0, 0, 1, 0],
-      "l": [1, 0, 1, 0, 1, 0],
-      "m": [1, 1, 0, 0, 1, 0],
-      "n": [1, 1, 0, 1, 1, 0],
-      "o": [1, 0, 0, 1, 1, 0],
-      "p": [1, 1, 1, 0, 1, 0],
+      "b": [1, 1, 0, 0, 0, 0],
+      "c": [1, 0, 0, 1, 0, 0],
+      "d": [1, 0, 0, 1, 1, 0],
+      "e": [1, 0, 0, 0, 1, 0],
+      "f": [1, 1, 0, 1, 0, 0],
+      "g": [1, 1, 0, 1, 1, 0],
+      "h": [1, 1, 0, 0, 1, 0],
+      "i": [0, 1, 0, 1, 0, 0],
+      "j": [0, 1, 0, 1, 1, 0],
+      "k": [1, 0, 1, 0, 0, 0],
+      "l": [1, 1, 1, 0, 0, 0],
+      "m": [1, 0, 1, 1, 0, 0],
+      "n": [1, 0, 1, 1, 1, 0],
+      "o": [1, 0, 1, 0, 1, 0],
+      "p": [1, 1, 1, 1, 0, 0],
       "q": [1, 1, 1, 1, 1, 0],
-      "r": [1, 0, 1, 1, 1, 0],
-      "s": [0, 1, 1, 0, 1, 0],
+      "r": [1, 1, 1, 0, 1, 0],
+      "s": [0, 1, 1, 1, 0, 0],
       "t": [0, 1, 1, 1, 1, 0],
-      "u": [1, 0, 0, 0, 1, 1],
-      "v": [1, 0, 1, 0, 1, 1],
-      "w": [0, 1, 1, 1, 0, 1],
-      "x": [1, 1, 0, 0, 1, 1],
-      "y": [1, 1, 0, 1, 1, 1],
-      "z": [1, 0, 0, 1, 1, 1],
+      "u": [1, 0, 1, 0, 0, 1],
+      "v": [1, 1, 1, 0, 0, 1],
+      "w": [0, 1, 0, 1, 1, 1],
+      "x": [1, 0, 1, 1, 0, 1],
+      "y": [1, 0, 1, 1, 1, 1],
+      "z": [1, 0, 1, 0, 1, 1],
       "motor1": [1, 0, 0, 0, 0, 0],
       "motor2": [0, 1, 0, 0, 0, 0],
       "motor3": [0, 0, 1, 0, 0, 0],
@@ -46,6 +46,15 @@ const alphabet =  {
       "motor6": [0, 0, 0, 0, 0, 1]
     }
 
+
+conversion = {
+    0:0,
+    1:3,
+    2:1,
+    3:4,
+    4:2,
+    5:5
+}
 
 const currentSymbol = document.getElementById("current-symbol");
 
@@ -62,6 +71,149 @@ let quizModel = {
     "guessButtons": document.getElementsByClassName("guess-button"),
     "correctGuesses": [],
     "incorrectGuesses": []
+}
+
+let evaluationModel = {
+    previousParticipants:[],
+    currentParticipant:{
+        participantID: "participant ",
+        noQuestions: 15,
+        currentQuestionNo: 0,
+        previousAttempts: [],
+        questions:[]
+    },
+    optionsPerGuess: 4,
+    allSymbols: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
+    'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'],
+}
+
+
+//create new questions and store them in the model, then update GUI to start the evaluation
+function startNewEvaluation(){
+        for(let i = 0; i<evaluationModel.currentParticipant.noQuestions * 10; i++){
+            const nextOptions = [];
+            //keep adding options randomly from the pool of allowed symbols (pick without replacement)
+            while(nextOptions.length < evaluationModel.optionsPerGuess){
+                filteredAllowedSymbols = evaluationModel.allSymbols.filter(s => !(nextOptions.includes(s)));
+                let randomNumber = Math.round(Math.random()* (filteredAllowedSymbols.length - 1));
+                // console.log("random number should be 0-25:",randomNumber);
+                nextOptions.push(filteredAllowedSymbols[randomNumber]);
+            }
+            const newOptions = nextOptions.sort();
+            //set new answer randomly
+            const newAnswer = nextOptions[Math.round(Math.random()*(evaluationModel.optionsPerGuess - 1))];
+
+            const newQuestion = {questionNo: i+1,
+                                 options: newOptions,
+                                 answer: newAnswer}
+
+            evaluationModel.currentParticipant.questions.push(newQuestion);
+        }
+        console.log(evaluationModel);
+}
+
+const packRadio = document.getElementById("pack-radio");
+const directRadio = document.getElementById("direct-radio");
+let serialMode = "pack";
+const serialRadios = [packRadio, directRadio];
+
+for(let i = 0; i< serialRadios.length; i++){
+    serialRadios[i].onclick = e => {
+        console.log(serialRadios[i].checked);
+        if(serialRadios[i].checked){
+            serialMode = serialRadios[i].value;
+        }
+        console.log("serial mode changed to:", serialMode);
+    }
+}
+
+const stages = {
+    "currentStage": "calibration",
+    "allStages":{
+    "quiz": document.getElementById("quiz-stage"),
+    "freeplay": document.getElementById("freeplay-stage"),
+    "calibration": document.getElementById("calibration-stage"),
+    "evaluation": document.getElementById("evaluation-stage")
+}
+}
+
+const customAlphabetUpload = document.getElementById("file");
+customAlphabetUpload.addEventListener("change", async function(e){
+    console.log(e.target.files);
+    if(e.target.files.length > 0){
+        const alphabet = await parseJsonFile(e.target.files[0]);
+        customAlphabetModel.alphabet = alphabet;
+
+        for(let j = 0; j<alphabet.length; j++){
+            const symbol = alphabet[j];
+            const customRepContainer = document.createElement("li");
+            customRepContainer.classList.add("custom-representation-container");
+        
+            const customLabel = document.createElement("label");
+            customLabel.textContent = symbol.name;
+        
+            const customRepList = document.createElement("ul");
+            customRepList.classList.add("custom-representation-list")
+            
+        
+            for(let i =0; i<6; i++){
+                const b = document.createElement("li");
+                b.classList.add("custom-alphabet-braille-dot");
+                if(symbol.activations[i] == 1){
+                    b.classList.add("active");
+                }
+                customRepList.appendChild(b);
+            }
+            
+
+            const sendVibrationButton = document.createElement("button");
+            sendVibrationButton.onclick = (e) => {
+            //find the motor configuration from the custom alphabet
+            //encode as a char and send
+        
+                let matches = alphabet.filter(a => a.name == symbol.name);
+                if(!matches || matches.length == 0) return
+                else{
+                    let match = matches[0];
+                    let packedConfig = packConfigToChar(match.activations);
+                    if(port!=null)  writeToStream(packedConfig);
+                }
+            }
+            sendVibrationButton.textContent = "Send to Bracelet";
+        
+            customRepContainer.appendChild(customLabel);
+        
+            customRepContainer.appendChild(customRepList);
+        
+            customRepContainer.appendChild(sendVibrationButton);
+        
+        
+            document.getElementById("custom-alphabet-list").appendChild(customRepContainer)
+            console.log(alphabet);
+        }
+    }
+})
+
+
+async function parseJsonFile(file){
+    return new Promise((resolve, reject) => {
+        const fileReader = new FileReader()
+        fileReader.onload = event => resolve(JSON.parse(event.target.result))
+        fileReader.onerror = error => reject(error)
+        fileReader.readAsText(file)
+    })
+}
+
+//hide all game stages except new mode choice
+function changeMode(newmode){
+    let allStages = stages.allStages;
+    console.log("all stages", Object.keys(allStages));
+    console.log(allStages["quiz"].classList)
+    Object.keys(allStages).forEach( s =>{ console.log(s);
+        allStages[s].classList.add("hidden")}
+    )
+    stages.allStages[newmode].classList.remove("hidden");
+    stages["currentStage"] = newmode;
 }
 
 const quizToggleButtonsContainer = document.getElementById("quiz-select-symbols-container");
@@ -101,6 +253,119 @@ for(let i = 0; i < quizModel.allQuizSymbols.length; i++){
 
 updateQuizGui(quizModel, alphabet)
 
+const customAlphabetModel = {
+    "activations": [0,0,0,0,0,0],
+    "alphabet": []
+}
+
+const customAlphabetInput = document.getElementById("cutstom-alphabet-input");
+const addCustomAlphabetButton = document.getElementById("add-cutstom-alphabet-button");
+const customAlphabetList = document.getElementById("custom-alphabet-list");
+
+function packConfigToChar(activations){
+    //Converts an array correpsonding to activated motors into
+    //a single char that can be sent via serial
+    if(!activations || activations.length != 6){
+        console.log("Please provide a valid array of motor configurations instead of:", activations);
+        return -1;
+    }
+    let packedInt = 0
+    for (let i  = 0; i< activations.length; i++){
+        packedInt += activations[i]
+        if (i < 5)packedInt*=2
+    }
+    let packedChar = String.fromCharCode(packedInt);
+
+    console.log("PACK -- original list: ", activations, "packed integer", packedInt, "char:", packedChar);
+    return packedChar;
+}
+
+function handleAddNewSymbol(){
+    let name = customAlphabetInput.value;
+    customAlphabetModel.alphabet.push({
+        "name": name,
+        "activations": JSON.parse(JSON.stringify(customAlphabetModel.activations))
+    })
+
+
+    console.log("updated alphabet:", customAlphabetModel.alphabet)
+    const customRepContainer = document.createElement("li");
+    customRepContainer.classList.add("custom-representation-container");
+
+    const customLabel = document.createElement("label");
+    customLabel.textContent = name;
+
+    const customRepList = document.createElement("ul");
+    customRepList.classList.add("custom-representation-list")
+    
+
+    for(let i =0; i<6; i++){
+        const b = document.createElement("li");
+        b.classList.add("custom-alphabet-braille-dot");
+        if(customAlphabetModel.activations[i] == 1){
+            b.classList.add("active");
+        }
+        customRepList.appendChild(b);
+    }
+
+    const sendVibrationButton = document.createElement("button");
+    sendVibrationButton.onclick = (e) => {
+        //find the motor configuration from the custom alphabet
+        //encode as a char and send
+
+        let matches = customAlphabetModel.alphabet.filter(a => a.name == name);
+        if(!matches || matches.length == 0) return
+        else{
+            let match = matches[0];
+            let packedConfig = packConfigToChar(match.activations);
+            if(port!=null)  writeToStream(packedConfig);
+        }
+    }
+    sendVibrationButton.textContent = "Send to Bracelet";
+
+    customRepContainer.appendChild(customLabel);
+
+    customRepContainer.appendChild(customRepList);
+
+    customRepContainer.appendChild(sendVibrationButton);
+
+
+    document.getElementById("custom-alphabet-list").appendChild(customRepContainer)
+    console.log(customAlphabetModel.alphabet);
+}
+
+function playNewSymbol(){
+    let name = customAlphabetInput.value;
+    const newConfig = customAlphabetModel.activations;
+    console.log("New symbol: name - ", newConfig);
+    handleCustomCharacterSend(newConfig);
+}
+
+function handleCustomCharacterSend(activations){
+    if (serialMode!="pack"){
+        window.alert("Unable to send custom motor activations to bracelet unless it uses the bit packing software AND this application is in 'pack' serial mode");
+        return;
+    }
+    else{
+        let packedChar = packConfigToChar(activations);
+        if(port!=null){
+            writeToStream(packedChar);
+            console.log("Sending activation", activations, " to bracelet as packed char", packedChar);
+        }
+    }
+}
+
+function toggleCustomBrailleDot(id){
+    let currentVal = customAlphabetModel.activations[id - 1];
+    if (currentVal == 0){
+        document.getElementById("custom-braille-dot" + id).classList.add("active");
+    }
+    else{
+        document.getElementById("custom-braille-dot" + id).classList.remove("active");
+    }
+    customAlphabetModel.activations[id - 1] = 1 - currentVal;
+}
+
 document.addEventListener("DOMContentLoaded", async function(){
     console.log('serial' in navigator); 
     if(! ('serial' in navigator)){
@@ -110,13 +375,20 @@ document.addEventListener("DOMContentLoaded", async function(){
 
 document.addEventListener('keydown', function(event){
     let key = event.key;
-    handleCharacterSend(key);
+    if(stages.currentStage == "calibration"){
+        handleCharacterSend(key);
+    }
 })
 
 
 async function handleMotorPress(motorid){
     //send the character to the arduino if it's connected
-    if(port!=null) writeToStream([motorid]);
+    if(port!=null){
+        if(serialMode=="pack"){
+            writeToStream(packConfigToChar(alphabet["motor"+motorid]));
+        }
+        else writeToStream(motorid);
+    }
 
     for(let i = 1; i<=6; i++){
         document.getElementById("motor" + (i).toString()).classList.remove("active")
@@ -127,12 +399,19 @@ async function handleMotorPress(motorid){
 //sends a given character to serial and updates visual indicator of which motors are activated
 async function handleCharacterSend(char){
     //send the character to the arduino if it's connected
-    if(port!=null) writeToStream([char]);
+
+        if(serialMode == "pack"){
+            if(port!=null) writeToStream(packConfigToChar(alphabet[char]));
+            console.log("sending packed:", packConfigToChar(alphabet[char]));
+        }
+        else{
+            if(port!=null) writeToStream(char);
+            console.log("sending direct:", char)
+        }
 
     if(["learn"].includes(mode)){
         //demonstrate which buttons need highlighting
         let motorConfig = alphabet[char] || [];
-        console.log("key, config:", char, motorConfig)
         for(let i = 0; i<motorConfig.length; i++){
             if(motorConfig[i] == 1){
                 document.getElementById("motor" + (i+1).toString()).classList.add("active")
@@ -146,6 +425,10 @@ async function handleCharacterSend(char){
 
         if(char >= '1' && char <= '6'){
             currentSymbol.textContent = "motor "+ char;
+            for(let i = 1; i<=6; i++){
+                document.getElementById("motor"+i).classList.remove("active")
+            }
+            document.getElementById("motor"+char).classList.add("active")
         }
         else if (char >= 'a' && char <= 'z'){
             currentSymbol.textContent = char;
@@ -167,7 +450,8 @@ async function connect(){
     outputDone = encoder.readable.pipeTo(port.writable);
     outputStream = encoder.writable;
 
-    writeToStream('c', 'echo(false);');
+    // CODELAB: Send CTRL-C and turn off echo on REPL
+    writeToStream('\x03');
 }
 
 async function clickConnect(){
@@ -178,7 +462,7 @@ function writeToStream(...lines){
     const writer = outputStream.getWriter();
     lines.forEach((line) => {
         console.log('[SEND]', line);
-        writer.write(line + '\n');
+        writer.write(line);
     });
 writer.releaseLock();
 }
@@ -300,10 +584,35 @@ function updateQuizGui(quizModel, alphabet){
     const brailleDots = brailleReps[i].getElementsByClassName("braille-dot");
         console.log(brailleDots);
         for(let d = 0; d < brailleDots.length; d++){
-            if(alphabet[quizModel.options[i]][d] == 1) brailleDots[d].classList.add("active");
+            if(alphabet[quizModel.options[i]][conversion[d]] == 1) brailleDots[d].classList.add("active");
             else brailleDots[d].classList.remove("active");
         }
     }
     console.log(quizModel.history);
     resetGuessButtonStyles();
 }
+
+function handleAlphabetDownload(){
+    console.log("attempting to download alphabet:", customAlphabetModel.alphabet)
+    downloadObjectAsJson(customAlphabetModel.alphabet, "my-alphabet");
+}
+
+// function handleCustomAlphabetUpload(e){
+//     let reader = new FileReader();
+//     reader.onload = onReaderLoad;
+//     reader.readAsText(e);
+// }
+
+
+
+
+//used to download JSON files
+function downloadObjectAsJson(exportObj, exportName){
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+    var downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href",     dataStr);
+    downloadAnchorNode.setAttribute("download", exportName + ".json");
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+  }

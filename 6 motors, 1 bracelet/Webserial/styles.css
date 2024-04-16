@@ -7,12 +7,14 @@
 html{
     --darkBG: black;
     --lightText: white;
+    --light-grey: rgb(196, 196, 196);
+    --evaluation-progess: 0.7;
     font-size: 20px;
 }
 
 body{
     width:100%;
-    height:100vh;
+    /* height:100vh; */
     margin: auto;
     display: flex;
     flex-direction: column;
@@ -21,6 +23,24 @@ body{
 
     gap: 3em;
     padding: 2em;
+}
+
+
+
+.calibration-stage{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap:2em;
+}
+
+.calibration-stage.hidden{
+    display: none;
+}
+
+.serial-settings{
+    display: flex;
+    gap:1em;
 }
 
 button{
@@ -34,7 +54,7 @@ button{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap:2em;
+    gap:1em;
     width: 100%;
 }
 
@@ -76,15 +96,24 @@ button{
     text-align: center;
 }
 
+.modes-container{
+    display: flex;
+    gap: 1em;
+}
+
 .quiz-stage{
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 
-    border: 3px solid black;
-    padding:2em;
+    outline: 3px solid black;
+    /* padding:2em; */
     gap:2em;
+}
+
+.quiz-stage.hidden{
+    display: none;
 }
 
 .quiz-stage button{
@@ -161,3 +190,180 @@ button{
     background: var(--darkBG);
 }
 
+/* EVALUATION */
+
+#evaluation-stage{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#evaluation-stage.hidden{
+    display: none;
+}
+
+.progress-container{
+    width: 500px;
+    height:10px;
+    outline: 2px solid black;
+    padding:0;
+
+    border-radius: 10px;
+
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+
+.progress-bar{
+    width: calc(var(--evaluation-progess) * 100%);
+    height:inherit;
+    background-color: green;
+    border-radius: 10px 0px 0px 10px;
+
+    transition: 2s;
+}
+
+
+
+
+/* FREEPLAY */
+
+.freeplay-stage{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap:1em;
+
+    text-align: center;
+}
+
+.freeplay-stage.hidden{
+    display: none;
+}
+
+.custom-alphabet-builder{
+    display: flex;
+    flex-direction: column;
+    gap:1em;
+}
+
+.naming-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap:0.25em;
+}
+
+.naming-container label{
+    display: block;
+}
+
+.naming-container input{
+    padding: 0.5em;
+    text-align: center;
+}
+
+.custom-alphabet-builder-buttons{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-alphabet-builder-buttons button{
+    display: block;
+}
+
+.custom-braille-representation{
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    margin: auto;
+    gap: 1em;
+    width: fit-content;
+}
+
+.custom-braille-dot{
+    width:2em;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    border: none;
+    background: var(--light-grey);
+    padding:0.5em;
+    scale: 1;
+    transition: 0.25s;
+
+
+    box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.432);
+}
+
+
+.custom-braille-dot:hover{
+    cursor: pointer;
+    scale: 1.1;
+
+
+
+}
+
+.custom-braille-dot.active{
+    background: var(--darkBG);
+    color: var(--lightText);
+
+    box-shadow:  0px 0px 4px 1px rgba(0, 0, 0, 0.639);
+
+}
+
+
+.custom-alphabet-list{
+    border: 0px solid green;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap:2em
+}
+
+
+.custom-representation-container{
+    display: flex;
+    flex-direction: column;
+    gap:1em;
+    padding:2em;
+    align-items: center;
+}
+
+.custom-representation-list{
+    border: 0px solid blue;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap:0.5em;
+}
+
+.custom-alphabet-braille-dot{
+    width:2em;
+    height: 2em;
+    background: rgb(201, 201, 201);
+    border-radius: 50%;
+}
+
+.custom-alphabet-braille-dot.active{
+    background: black;
+}
+
+#file{
+    box-sizing: content-box;
+}
+
+.upload-custom-alphabet{
+    box-sizing: content-box;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap:1em;
+    border: 1px dotted black;
+    padding:1em;
+    overflow: hidden;
+}
