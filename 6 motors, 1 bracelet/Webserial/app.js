@@ -192,6 +192,10 @@ function nextEvalQuestion(){
         currentParticipant.currentIncorrect = [];
 
         evaluationModel.currentParticipant.currentQuestionNo = evaluationModel.currentParticipant.currentQuestionNo + 1;
+        if(evaluationModel.currentParticipant.currentQuestionNo == evaluationModel.currentParticipant.noQuestions){
+            document.getElementById("eval-next").classList.add("unpressable");
+            document.getElementById("eval-next").textContent = "No more questions";
+        }
 
         updateEvaluationGui();
     }
@@ -291,10 +295,10 @@ function handleParticipantDownload(){
 
     const totalQuestions = evaluationModel.currentParticipant.previousAttempts.length;
     const totalCorrect = evaluationModel.currentParticipant.previousAttempts.filter(a => a.isCorrect).length;
-
+    const dateStr = new Date().toString();
     const newParticipant = {
         participantID: evaluationModel.currentParticipant.participantID,
-        date: evaluationModel.currentParticipant.date,
+        date: dateStr,
         formFactor: evaluationModel.currentParticipant.formFactor,
         answerHistory: evaluationModel.currentParticipant.previousAttempts,
         totalQuestions: totalQuestions,
@@ -305,7 +309,7 @@ function handleParticipantDownload(){
 
     previousParticipants.push(newParticipant);
 
-    downloadObjectAsJson(previousParticipants, "User Evaluation ALL as of " + Date.UTC());
+    downloadObjectAsJson(previousParticipants, "User Evaluation ALL as of " + dateStr);
     downloadObjectAsJson(newParticipant, "User Evaluation of " + newParticipant.participantID);
 
 }

@@ -24,6 +24,12 @@ body{
     padding: 2em;
 }
 
+header{
+    width: 100vw;
+    text-align: center;
+    background-color: black;
+    color: white;
+}
 
 
 .calibration-stage{
@@ -68,12 +74,19 @@ button{
 .motor-button, .braille-dot{
     border: none;
     aspect-ratio: 1/1;
-    background: rgb(182, 182, 182);
-    width: 3em;
+    background: rgb(209, 209, 209);
+    width: 3.5em;
     text-align: center;
 
     padding:1em;
     border-radius: 50%;
+
+    transition: 0.25s;
+
+
+    box-shadow: inset 0px 0px 7px rgba(0, 0, 0, 0.432);
+
+
 }
 
 .motor-button:hover{
@@ -81,12 +94,13 @@ button{
     cursor: pointer;
     background: var(--darkBG);
     color: var(--lightText);
-    transition: 0.25s;
 }
 
 .motor-button.active{
     background: var(--darkBG);
     color: var(--lightText);
+    box-shadow: 0px 2px 4px 1px rgba(30, 30, 30, 0.729);
+
 }
 
 .current-symbol{
@@ -245,16 +259,16 @@ button{
     --evaluation-progress: 0;
     width: calc(var(--evaluation-progress) * 100%);
     height:inherit;
-    background-color: green;
+    background-color: rgb(20, 20, 20);
     border-radius: 10px 0px 0px 10px;
 
-    transition: 2s;
+    transition: 0.2s;
 }
 
 #eval-test-container{
     display: flex;
     flex-direction: column;
-    gap:2em;
+    gap:3em;
 
     align-items: center;
 }
@@ -267,7 +281,7 @@ button{
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     list-style: none;
-    gap:3em;
+    gap:5em;
 
     align-items: center;
     justify-content: center;
@@ -293,11 +307,11 @@ button{
 }
 
 .eval-guess-button.correct{
-    background-color: green;
+    background-color: rgb(122, 252, 122);
 }
 
 .eval-guess-button.incorrect{
-    background-color: red;
+    background-color: rgb(214, 89, 89);
 }
 
 .eval-rep button{
