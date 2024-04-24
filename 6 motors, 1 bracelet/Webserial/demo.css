@@ -318,6 +318,13 @@ button{
     align-items: center;
 }
 
+#motor-config-img{
+    width: 30vw;
+    position: fixed;
+    top:0;
+    left:0;
+}
+
 #evaluation-setup{
 
     font-family: Exam;
