@@ -11,6 +11,8 @@ let outputStream;
 
 let mode = "learn"
 
+let start = Date.now();
+let end = Date.now();
 
 const evaluation30Questions = [
     {"questionNo":1,"options":["f","g","h","n","t"],"answer":"f","replaysRemaining":4},
@@ -248,7 +250,8 @@ let evaluationModel = {
         "currentCorrect" :[],
         "questions":[],
         "round": 1,
-        "time": Date.now()
+        "time": Date.now(),
+        "timeBeforeCorrect": 0
     },
     "noReplays" : 4,
     "optionsPerGuess": 5,
@@ -345,13 +348,39 @@ function startNewEvaluation(){
         console.log("new evaluation:", evaluationModel);
 
         updateEvaluationGui();
+        start = Date.now();
         document.getElementById("evaluation-setup").classList.add("hidden");
         document.getElementById("eval-test-container").classList.remove("hidden");
 
 }
 
+let done = false
+
 function nextEvalQuestion(){
-    if(evaluationModel.currentParticipant.currentQuestionNo > evaluationModel.currentParticipant.noQuestions){
+
+    console.log(evaluationModel.currentParticipant.currentQuestionNo);
+    if(evaluationModel.currentParticipant.currentQuestionNo >= evaluationModel.currentParticipant.noQuestions){
+        if(!done){
+
+
+
+            done = true;
+
+            let currentPoints = 1
+            if(evaluationModel.currentParticipant.currentIncorrect.length > 0){
+                currentPoints = 0.8 - 0.2*evaluationModel.currentParticipant.currentIncorrect.length;
+            }
+
+            evaluationModel.currentParticipant.previousAttempts.push({
+            "questionNo": evaluationModel.currentParticipant.currentQuestionNo,
+            "answer": JSON.parse(JSON.stringify(evaluationModel.currentParticipant.questions[evaluationModel.currentParticipant.currentQuestionNo-2].answer)),
+            "incorrect": JSON.parse(JSON.stringify(evaluationModel.currentParticipant.currentIncorrect)),
+            "isCorrect": evaluationModel.currentParticipant.currentIncorrect == 0,
+            "replaysRemaining": evaluationModel.currentParticipant.questions[evaluationModel.currentParticipant.currentQuestionNo-2].replaysRemaining,
+            "points": currentPoints,
+            "timeBeforeCorrect": evaluationModel.currentParticipant.timeBeforeCorrect
+        })
+        }
         return;
     }
 
@@ -364,11 +393,12 @@ function nextEvalQuestion(){
         }
         currentParticipant.previousAttempts.push({
             "questionNo": evaluationModel.currentParticipant.currentQuestionNo,
-            "answer": JSON.parse(JSON.stringify(currentParticipant.questions[evaluationModel.currentParticipant.currentQuestionNo].answer)),
+            "answer": JSON.parse(JSON.stringify(currentParticipant.questions[evaluationModel.currentParticipant.currentQuestionNo-1].answer)),
             "incorrect": JSON.parse(JSON.stringify(currentParticipant.currentIncorrect)),
             "isCorrect": currentParticipant.currentIncorrect == 0,
-            "replaysRemaining": currentParticipant.questions[evaluationModel.currentParticipant.currentQuestionNo].replaysRemaining,
-            "points": currentPoints
+            "replaysRemaining": currentParticipant.questions[evaluationModel.currentParticipant.currentQuestionNo-1].replaysRemaining,
+            "points": currentPoints,
+            "timeBeforeCorrect": evaluationModel.currentParticipant.timeBeforeCorrect
         })
 
         currentParticipant.currentCorrect = [];
@@ -380,6 +410,7 @@ function nextEvalQuestion(){
             document.getElementById("eval-next").textContent = "No more questions";
         }
 
+        start = Date.now();
         updateEvaluationGui();
     }
     else{
@@ -406,7 +437,7 @@ function playEvalLetter(){
     let currentQuestionNo = evaluationModel.currentParticipant.currentQuestionNo;
 
 
-    if(evaluationModel.currentParticipant.questions[currentQuestionNo].replaysRemaining <= 0 ){
+    if(evaluationModel.currentParticipant.questions[currentQuestionNo-1].replaysRemaining <= 0 ){
         window.alert("Out of replays for this question, please make a guess.");
         return;
     }
@@ -431,7 +462,7 @@ function makeEvalGuess(guess){
 
     let currentParticipant = evaluationModel.currentParticipant;
     let questionNo = currentParticipant.currentQuestionNo;
-    let currentQuestion = currentParticipant.questions[questionNo];
+    let currentQuestion = currentParticipant.questions[questionNo-1];
     let answer = currentQuestion.answer;
 
     if(currentParticipant.currentCorrect.length > 0){
@@ -450,6 +481,12 @@ function makeEvalGuess(guess){
                 }
             }
             document.getElementById("eval-next").classList.remove("unpressable");
+            end = Date.now();
+            evaluationModel.currentParticipant.timeBeforeCorrect = end - start;
+            if(evaluationModel.currentParticipant.noQuestions == evaluationModel.currentParticipant.currentQuestionNo){
+                evaluationModel.currentParticipant.currentQuestionNo += 1;
+                nextEvalQuestion();
+            }
         }
         else{
             console.log("incorrect");
@@ -508,7 +545,7 @@ function updateEvaluationGui(){
     }
 
     console.log("current Q", currentQuestionNo)
-    let currentQuestion = evaluationModel.currentParticipant.questions[currentQuestionNo];
+    let currentQuestion = evaluationModel.currentParticipant.questions[currentQuestionNo-1];
     let currentOptions = currentQuestion.options;
     console.log("current options:", currentOptions);
     for(let i = 0; i < currentOptions.length; i++){
