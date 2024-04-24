@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibraille</title>
+    <link rel="stylesheet" href="eval.css">
+</head>
+<body>
+    <!-- <header><h1>Vibraille</h1></header> -->
+    
+    <div id="calibration-stage" class="calibration-stage">
+        <h2>Calibration Mode</h2>
+        <div class="serial-settings hidden">
+            Serial Mode:
+            <input type="radio" id="pack-radio" name="serialMode" value="pack" checked="true">
+            <label for="html">Packing</label><br>
+            <input type="radio" id="direct-radio" name="serialMode" value="direct">
+            <label for="css">Direct</label><br>
+    
+        </div>
+        <button id="connect-button" onclick="clickConnect()">Connect to Bracelet</button>
+        <div class="motor-diagram">
+            <div class="l">
+                LEFT<br>BRACELET
+            </div>
+            <div class="bracelet-diagram">
+                <img src="assets/bracelets/top.png" alt="">
+                <img src="assets/bracelets/left.png" alt="">
+                <img src="assets/bracelets/right.png" alt="">
+            </div>
+            <div class="motor-buttons-container">
+                <ul class="motor-buttons-list">
+                    <li><button id="motor1" class="motor-button" onclick="handleMotorPress('1')">1</button></li>
+                    <li><button id="motor4" class="motor-button" onclick="handleMotorPress('4')">4</button></li>
+                    <li><button id="motor2" class="motor-button" onclick="handleMotorPress('2')">2</button></li>
+                    <li><button id="motor5" class="motor-button" onclick="handleMotorPress('5')">5</button></li>
+                    <li><button id="motor3" class="motor-button" onclick="handleMotorPress('3')">3</button></li>
+                    <li><button id="motor6" class="motor-button" onclick="handleMotorPress('6')">6</button></li>
+                </ul>
+            </div>
+            <div class="bracelet-diagram">
+                <img src="assets/bracelets/top.png" alt="">
+                <img src="assets/bracelets/right.png" alt="">
+                <img src="assets/bracelets/left.png" alt="">
+            </div>
+            <div class="r">
+                RIGHT<br>BRACELET
+            </div>
+        </div>
+        <div class="instuctions">
+            <p>Click a numbered motor to activate the corresponding vibration on your bracelet.</p>
+            <p>Use keyboard letters a-z to activate their corresponding braille patterns</p>
+        </div>
+    </div>
+
+    <div class="modes-container">
+        <button onclick="(changeMode('quiz'))">Quiz</button>
+        <button onclick="(changeMode('evaluation'))">Evaluation</button>
+        <button onclick="(changeMode('freeplay'))">Freeplay</button>
+    </div>
+
+    <div id="quiz-stage" class="quiz-stage hidden">
+        <h2>Quiz Mode</h2>
+        <div class="quiz-instructions">
+            <p>Enable the letters you've learnt so far below</p>
+            <p>Press "play letter" to send the letter to your bracelet</p>
+
+            <p>Keep guessing from the quiz options until you get it right and then press "next letter"</p>
+        </div>
+        <div id="quiz-select-symbols-container" class="quiz-select-symbols-container"></div>
+        <div class="quiz-controls">
+            <p id="quiz-score" class="quiz-score">Score:</p>
+            <div class="quiz-control-buttons">
+                <button aria-label="Play letter" onclick="handleQuizPlaySymbolPress()">Play Letter</button>
+                <button aria-label="Next letter" onclick="handleQuizNextSymbolPress()">Next Letter</button>
+            </div>
+        </div>
+        <div class="guess-buttons container">
+            <ul class="guess-list">
+                <li class="guess">
+                    <button aria-label="Select letter" class="guess-button">A</button>
+                    <ul class="braille-representation">
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                    </ul>
+                </li>
+                <li class="guess">
+                    <button aria-label="Select letter" class="guess-button">A</button>
+                    <ul class="braille-representation">
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                    </ul>
+                </li>
+                <li class="guess">
+                    <button aria-label="Select letter" class="guess-button">A</button>
+                    <ul class="braille-representation">
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                    </ul>
+                </li>
+                <li class="guess">
+                    <button aria-label="Select letter" class="guess-button">A</button>
+                    <ul class="braille-representation">
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="evaluation-stage" class="evaluation-stage hidden">
+
+    <div id="evaluation-setup">
+        <div class="round-buttons">
+            <label for="">Participant Round:</label>
+            <button id="first" class="round-button active"  onclick="setRound(1)">First</button>
+            <button id="second" class="round-button" onclick="setRound(2)">Second</button>
+            <button id="third" class="round-button" onclick="setRound(3)">Third</button>
+        </div>
+        <div class="participant-id">
+            <label for="">Participant ID:</label>
+            <input autocomplete="off" id="participant-id-input" type="text" name="" id="">
+        </div>
+        <div class="eval-question-no-container">
+            <label for="eval-question-no-input">Number of Questions:</label>
+            <input type="number" name="" id="eval-question-no-input" value="15">
+        </div>
+
+        <button id="start-evaluation-button" onclick="startNewEvaluation()">Start User Test</button>
+    </div>
+
+
+    <div id="eval-test-container" class="hidden">
+        <label id="current-eval-question-label">Question 1 / 15</label>
+        <div class="progress-container">
+            <div id="progress-bar"  width="0px" class="progress-bar"></div>
+    </div>
+
+    <div class="eval-controls">
+        <button id="eval-play-letter" onclick="playEvalLetter()">Play Letter</button>
+        <button id="eval-next" onclick="nextEvalQuestion()">Next Question</button>
+    </div>
+
+
+
+
+        <div id="eval-guess-container">
+            <ul id="eval-guess-list">
+                <!-- These are generated programmatically and will be structured as followed -->
+                <!-- <li class="guess">
+                    <button aria-label="Select letter" class="guess-button">A</button>
+                    <ul class="braille-representation">
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                        <li class="braille-dot"></li>
+                    </ul>
+                </li> -->
+            </ul>
+        </div>
+
+        <button class="hidden" id="download-participant-data" onclick="handleParticipantDownload()">Download Data</button>
+
+    </div>
+
+
+    </div>
+
+    <div id="freeplay-stage" class="freeplay-stage hidden">
+        <h2>Freeplay</h2>
+        This Feature currently doesn't work but i know how to fix it and will. Not a priority
+        <p>Create new patterns to send to your bracelet and build your own vibrational vocabulary</p>
+        <div class="custom-alphabet-builder">
+            <ul class="custom-braille-representation">
+                <li><button class="custom-braille-dot" id="custom-braille-dot1" onclick="toggleCustomBrailleDot(1)"></button></li>
+                <li><button class="custom-braille-dot" id="custom-braille-dot2" onclick="toggleCustomBrailleDot(2)"></button></li>
+                <li><button class="custom-braille-dot" id="custom-braille-dot3" onclick="toggleCustomBrailleDot(3)"></button></li>
+                <li><button class="custom-braille-dot" id="custom-braille-dot4" onclick="toggleCustomBrailleDot(4)"></button></li>
+                <li><button class="custom-braille-dot" id="custom-braille-dot5" onclick="toggleCustomBrailleDot(5)"></button></li>
+                <li><button class="custom-braille-dot" id="custom-braille-dot6" onclick="toggleCustomBrailleDot(6)"></button></li>
+            </ul>
+            <button id="add-custom-alphabet-button" onclick="playNewSymbol()">Send Vibrations to bracelet</button>
+
+            <div class="naming-container">
+                <label for="cutstom-alphabet-input">Name this pattern:</label>
+                <input id="cutstom-alphabet-input" type="">
+                <button id="add-custom-alphabet-button" onclick="handleAddNewSymbol()">Add to Vocabulary List</button>
+            </div>
+
+        </div>
+        <h3>Your Vibration Vocabulary:</h3>
+        <button onclick="handleAlphabetDownload()">Download Your List</button>
+
+        <div class="upload-custom-alphabet">
+            <label for="file">Upload Vocab:</label>
+            <input id="file" name="file" type="file" />
+        </div>
+
+        <ul id="custom-alphabet-list" class="custom-alphabet-list">
+        </ul>
+    </div>
+
+    <script src="eval2.js"></script>
+</body>
+</html>
