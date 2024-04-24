@@ -11,6 +11,22 @@ let outputStream;
 
 let mode = "learn"
 
+const examStyleQuestions = [
+
+
+    "Which of the following is the definition of the race track principle?",
+    "What is the Discriminant of a 3-Dimensional Matrix?",
+    "What's the minimum number of logic gates needed to create a transputer?",
+    "Which of the following arguments proves the statement: 'It is decidable whether God exists'",
+    "Which of the following is the time complexity of Merge Sort?",
+    "Which of the following commands halts a Vagrant Box virtual machine?",
+    "Which of the following denotes a Hidden Markov Model?",
+    "Which of the following is a sensible definition of 'ready-to-hand'?",
+    "Which of the following defines a 'shape-changing interface'",
+
+
+
+]
 
 //maps a symbol to a motor activation configuration
 const alphabet =  {
@@ -49,6 +65,36 @@ const alphabet =  {
       "motor6": [0, 0, 0, 0, 0, 1]
     }
 
+const curatedQuestions = [
+    [
+        {"answer":"a", "options":["b", "k", "e", "c"]},
+        {"answer": "b", "options": ["k", "l", "a", "f"]},
+        {"answer": "c", "options": ["e", "i", "m", "u"]},
+        {"answer": "d", "options": ["j", "h", "n", "g"]},
+        {"answer": "e", "options": ["c", "o", "i", "d"]},
+        {"answer": "f", "options": ["m", "h", "o", "s"]},
+        {"answer": "g", "options": ["n", "t", "x", "z"]},
+        {"answer": "h", "options": ["f", "g", "j", "o", "r", "f"]},
+        {"answer": "i", "options": ["j", "e", "c", "f"]},
+        {"answer": "j", "options": ["h", "d", "n", "g", "t", "w"]},
+        {"answer": "k", "options": ["a", "b", "l", "o"]},
+        {"answer": "l", "options": ["k", "a", "s", "b"]},
+        {"answer": "m", "options": ["f", "o", "u", "x"]},
+        {"answer": "n", "options": ["x", "z", "g", "t"]},
+        {"answer": "o", "options": ["u", "h", "m", "f"]},
+        {"answer": "p", "options": ["v", "f", "h", "q"]},
+        {"answer": "q", "options": ["g", "p", "r", "t", "y"]},
+        {"answer": "r", "options": ["v", "p", "q", "w"]},
+        {"answer": "s", "options": ["f", "h", "m", "t", "o"]},
+        {"answer": "t", "options": ["g", "n", "q", "s", "x", "z"]},
+        {"answer": "u", "options": ["f", "h", "m", "o", "s", "z"]},
+        {"answer": "v", "options": ["p", "r", "u", "w"]},
+        {"answer": "w", "options": ["d", "j", "r", "y"]},
+        {"answer": "x", "options": ["g", "n", "m", "t", "y", "z", "u"]},
+        {"answer": "y", "options": ["n", "t", "x", "z", "w"]},
+        {"answer": "z", "options": ["n", "y", "o", "x"]}
+    ]
+]
 //converts from old motor grid layout to conventional Braille layout
 conversion = {
     0:0,
@@ -60,6 +106,8 @@ conversion = {
 }
 
 const currentSymbol = document.getElementById("current-symbol");
+
+const rumble = true;
 
 //Model for storing data in the quiz mode
 let quizModel = {
@@ -82,18 +130,21 @@ let evaluationModel = {
     "previousParticipants":[],
     "currentParticipant":{
         "participantID": "participant ",
-        "noQuestions": 15,
+        "noQuestions": 30,
         "currentQuestionNo": 0,
         "previousAttempts": [],
         "currentIncorrect": [],
         "currentCorrect" :[],
         "questions":[],
-        "formFactor": "",
+        "formFactor": "2-bracelet",
+        "points": 0,
         "time": Date.now()
     },
-    "noReplays" : 3,
-    "optionsPerGuess": 26,
-    "optionsPerGuessMax": 26,
+    "maxPoints":100,
+    "maxPointsPerGuess": 3,
+    "noReplays" : 10,
+    "optionsPerGuess": 5,
+    "optionsPerGuessMax": 5,
     "allSymbols": ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
     'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'],
     guessesGUI: []
@@ -112,7 +163,7 @@ function startNewEvaluation(){
             return;
         }
         if(document.getElementById("participant-id-input").value == ""){
-            window.alert("please enter a new participant ID");
+            window.alert("please enter a Candidate Name");
             return;
         }
         evaluationModel.currentParticipant.participantID = document.getElementById("participant-id-input").value;
@@ -244,6 +295,15 @@ function playEvalLetter(){
 
 }
 
+function calcPoints(n){
+    if(n == 0){
+        return evaluationModel.maxPointsPerGuess;     
+    }
+    else{
+        return Math.max(evaluationModel.maxPointsPerGuess - 2*n, -1);
+    }
+}
+
 function makeEvalGuess(guess){
     console.log("Making guess:", guess);
     console.log("guess was made: ", guess)
@@ -253,12 +313,18 @@ function makeEvalGuess(guess){
     let currentQuestion = currentParticipant.questions[questionNo];
     let answer = currentQuestion.answer;
 
-    if(currentParticipant.currentCorrect.length > 0){
+    if(currentParticipant.currentCorrect.length > 0 || currentParticipant.currentIncorrect.includes(guess)){
         //do nothing
     }
     else{
         const buttons = document.getElementsByClassName("eval-guess-button");
         if(guess == answer){
+            if(rumble){
+                writeToStream('a')//send correct answer vibraation sequence
+            }
+            let beat = new Audio('/sounds/correct-correct.mp3');
+            beat.play();
+            let points = calcPoints(evaluationModel.currentParticipant.currentIncorrect.length);
             console.log("Correct", buttons);
             currentParticipant.currentCorrect.push(answer);
             for(let i = 0; i < evaluationModel.optionsPerGuessMax; i++){
@@ -269,8 +335,15 @@ function makeEvalGuess(guess){
                 }
             }
             document.getElementById("eval-next").classList.remove("unpressable");
+            setTimeout(nextEvalQuestion, 350);
+            evaluationModel.currentParticipant.points = Math.max(evaluationModel.currentParticipant.points + points, 0);
+            evaluationModel.currentParticipant.points = Math.min(evaluationModel.currentParticipant.points, evaluationModel.maxPoints);
+
+            document.getElementById("current-points").textContent = `${evaluationModel.currentParticipant.points}`;
+            // nextEvalQuestion();
         }
         else{
+            writeToStream('b')//send incorrect answer vibraation sequence
             console.log("incorrect");
             currentParticipant.currentIncorrect.push(guess);
             for(let i = 0; i < evaluationModel.optionsPerGuessMax; i++){
@@ -322,7 +395,7 @@ function updateEvaluationGui(){
     let currentQuestionNo = evaluationModel.currentParticipant.currentQuestionNo;
     document.getElementById("eval-play-letter").textContent="Play Letter"
 
-    if (currentQuestionNo >= evaluationModel.currentParticipant.noQuestions){
+    if (currentQuestionNo >= evaluationModel.currentParticipant.noQuestions || currentQuestionNo > 10){
         document.getElementById("download-participant-data").classList.remove("hidden");
     }
 
@@ -338,9 +411,11 @@ function updateEvaluationGui(){
     document.getElementById("eval-next").classList.add("unpressable");
     document.getElementById("eval-play-letter").classList.remove("unpressable");
 
-
+    document.getElementById("exam-question-text").textContent = examStyleQuestions[Math.floor(Math.random()*examStyleQuestions.length)]
 
     document.getElementById("current-eval-question-label").textContent = "Question " + evaluationModel.currentParticipant.currentQuestionNo + "/" + evaluationModel.currentParticipant.noQuestions;
+    document.getElementById("current-eval-question-label").textContent = `Question ${evaluationModel.currentParticipant.currentQuestionNo + 1}`;
+
 
     const buttons = document.getElementsByClassName("eval-guess-button");
 
@@ -351,6 +426,7 @@ function updateEvaluationGui(){
         }
     }
     
+    document.getElementById("current-points").textContent = `${evaluationModel.currentParticipant.points}`;
 
     document.getElementById("progress-bar").style.setProperty("--evaluation-progress", (evaluationModel.currentParticipant.currentQuestionNo/evaluationModel.currentParticipant.noQuestions));
 }
@@ -711,6 +787,7 @@ async function connect(){
     outputDone = encoder.readable.pipeTo(port.writable);
     outputStream = encoder.writable;
 
+    document.getElementById("connect-button").textContent = "Connected!";
     // CODELAB: Send CTRL-C and turn off echo on REPL
     writeToStream('\x03');
 }
