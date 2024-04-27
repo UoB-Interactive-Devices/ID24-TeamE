@@ -441,18 +441,18 @@ function playEvalLetter(){
         window.alert("Out of replays for this question, please make a guess.");
         return;
     }
-    console.log(evaluationModel.currentParticipant.questions[currentQuestionNo].answer);
-    evaluationModel.currentParticipant.questions[currentQuestionNo].replaysRemaining -= 1;
-    if(evaluationModel.currentParticipant.questions[currentQuestionNo].replaysRemaining <= 0){
+    console.log(evaluationModel.currentParticipant.questions[currentQuestionNo-1].answer);
+    evaluationModel.currentParticipant.questions[currentQuestionNo-1].replaysRemaining -= 1;
+    if(evaluationModel.currentParticipant.questions[currentQuestionNo-1].replaysRemaining <= 0){
         document.getElementById("eval-play-letter").classList.add("unpressable");
     }
     
-    document.getElementById("eval-play-letter").textContent = `Replay letter - ${evaluationModel.currentParticipant.questions[currentQuestionNo].replaysRemaining}/${evaluationModel.noReplays} left`
+    document.getElementById("eval-play-letter").textContent = `Replay letter - ${evaluationModel.currentParticipant.questions[currentQuestionNo-1].replaysRemaining}/${evaluationModel.noReplays} left`
 
-    handleCharacterSend(evaluationModel.currentParticipant.questions[currentQuestionNo].answer)
+    handleCharacterSend(evaluationModel.currentParticipant.questions[currentQuestionNo-1].answer)
 
     console.log("play Letter pressed")
-    console.log(evaluationModel.currentParticipant.questions[currentQuestionNo]);
+    console.log(evaluationModel.currentParticipant.questions[currentQuestionNo-1]);
 
 }
 
@@ -530,7 +530,7 @@ function handleParticipantDownload(){
     previousParticipants.push(newParticipant);
 
     downloadObjectAsJson(previousParticipants, "User Evaluation ALL as of " + dateStr);
-    downloadObjectAsJson(newParticipant, "User Evaluation of " + newParticipant.participantID);
+    downloadObjectAsJson(newParticipant, "Learnability - " + newParticipant.participantID + " - " + evaluationModel.currentParticipant.round);
 
 }
 
