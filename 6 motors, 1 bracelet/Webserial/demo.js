@@ -750,8 +750,12 @@ async function handleCharacterSend(char){
         //demonstrate which buttons need highlighting
         let motorConfig = alphabet[char] || [];
         for(let i = 0; i<motorConfig.length; i++){
+            document.getElementById("motor" + (i+1).toString()).classList.remove("active")
+        }
+        for(let i = 0; i<motorConfig.length; i++){
             if(motorConfig[i] == 1){
                 document.getElementById("motor" + (i+1).toString()).classList.add("active")
+                await new Promise(r => setTimeout(r, 350));
             }
             else{
                 document.getElementById("motor" + (i+1).toString()).classList.remove("active")

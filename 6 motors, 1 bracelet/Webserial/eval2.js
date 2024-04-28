@@ -893,7 +893,8 @@ async function handleCharacterSend(char){
         let motorConfig = alphabet[char] || [];
         for(let i = 0; i<motorConfig.length; i++){
             if(motorConfig[i] == 1){
-                document.getElementById("motor" + (i+1).toString()).classList.add("active")
+                document.getElementById("motor" + (i+1).toString()).classList.add("active");
+                await new Promise(r => setTimeout(r, 350));
             }
             else{
                 document.getElementById("motor" + (i+1).toString()).classList.remove("active")
