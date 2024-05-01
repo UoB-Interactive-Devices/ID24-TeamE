@@ -111,7 +111,7 @@ conversion = {
 
 const currentSymbol = document.getElementById("current-symbol");
 
-const rumble = true;
+const rumble = false;
 
 //Model for storing data in the quiz mode
 let quizModel = {
@@ -323,10 +323,10 @@ function makeEvalGuess(guess){
     else{
         const buttons = document.getElementsByClassName("eval-guess-button");
         if(guess == answer){
-            if(rumble){
+            if(rumble && false){
                 writeToStream('a')//send correct answer vibraation sequence
             }
-            let beat = new Audio('/sounds/correct-correct.mp3');
+            let beat = new Audio('./sounds/correct-correct.mp3');
             beat.play();
             let points = calcPoints(evaluationModel.currentParticipant.currentIncorrect.length);
             console.log("Correct", buttons);
@@ -347,7 +347,9 @@ function makeEvalGuess(guess){
             // nextEvalQuestion();
         }
         else{
-            writeToStream('b')//send incorrect answer vibraation sequence
+            if(rumble){
+                writeToStream('b')//send incorrect answer vibraation sequence
+            }
             console.log("incorrect");
             currentParticipant.currentIncorrect.push(guess);
             for(let i = 0; i < evaluationModel.optionsPerGuessMax; i++){
