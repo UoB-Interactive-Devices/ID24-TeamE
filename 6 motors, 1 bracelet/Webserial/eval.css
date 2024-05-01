@@ -56,6 +56,10 @@ header{
     border-radius: 1em;
 }
 
+.send-word-container{
+    display: flex;
+}
+
 .calibration-stage.hidden{
     display: none;
 }

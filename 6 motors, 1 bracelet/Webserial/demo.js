@@ -9,6 +9,10 @@ let outputDone;
 let inputStream;
 let outputStream;
 
+const PULSE_DURATION = 500;  //how long should each braille buzz last
+const STAGGER_END_DELAY = 350;
+const STAGGER_DURATION = 350;
+
 let mode = "learn"
 
 const examStyleQuestions = [
@@ -733,6 +737,10 @@ async function handleMotorPress(motorid){
     document.getElementById("motor" + (motorid).toString()).classList.add("active")
 }
 
+async function delay(time){
+    await new Promise(r => setTimeout(r, time));
+}
+
 //sends a given character to serial and updates visual indicator of which motors are activated
 async function handleCharacterSend(char){
     //send the character to the arduino if it's connected
@@ -747,22 +755,7 @@ async function handleCharacterSend(char){
         }
 
     if(["learn"].includes(mode)){
-        //demonstrate which buttons need highlighting
-        let motorConfig = alphabet[char] || [];
-        for(let i = 0; i<motorConfig.length; i++){
-            document.getElementById("motor" + (i+1).toString()).classList.remove("active")
-        }
-        for(let i = 0; i<motorConfig.length; i++){
-            if(motorConfig[i] == 1){
-                document.getElementById("motor" + (i+1).toString()).classList.add("active")
-                await new Promise(r => setTimeout(r, 350));
-            }
-            else{
-                document.getElementById("motor" + (i+1).toString()).classList.remove("active")
-            }
-        }
 
-        //update current symbol indicator
 
         if(char >= '1' && char <= '6'){
             currentSymbol.textContent = "motor "+ char;
@@ -777,6 +770,26 @@ async function handleCharacterSend(char){
         else{
             currentSymbol.textContent = char + " (not in alphabet)"
         }
+
+        //demonstrate which buttons need highlighting
+        let motorConfig = alphabet[char] || [];
+        for(let i = 0; i<motorConfig.length; i++){
+            document.getElementById("motor" + (i+1).toString()).classList.remove("active")
+        }
+        for(let i = 0; i<motorConfig.length; i++){
+            if(motorConfig[i] == 1){
+                document.getElementById("motor" + (i+1).toString()).classList.add("active")
+                await delay(STAGGER_DURATION);
+            }
+            else{
+                document.getElementById("motor" + (i+1).toString()).classList.remove("active")
+            }
+        }
+        await delay(STAGGER_END_DELAY);
+
+
+        //update current symbol indicator
+
     }
 
 }

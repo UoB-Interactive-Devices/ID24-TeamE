@@ -57,8 +57,8 @@ bool useAnalog = true;
 
 
 const int PULSE_DURATION = 500;  //how long should each braille buzz last
-const int STAGGER_END_DELAY = 250;
-const int STAGGER_DURATION = 250;
+const int STAGGER_END_DELAY = 350;
+const int STAGGER_DURATION = 350;
 
 
 

@@ -9,7 +9,22 @@ let outputDone;
 let inputStream;
 let outputStream;
 
+
+const PULSE_DURATION = 500;  //how long should each braille buzz last
+const STAGGER_END_DELAY = 350;
+const STAGGER_DURATION = 350;
 let mode = "learn"
+let allowKeyboardInput = true;
+document.getElementById("send-word-button").addEventListener("click", async () => await handleSendWord())
+document.getElementById("send-word-input").addEventListener("focusin", (e) => {
+    console.log("change!", e.target.value);
+        allowKeyboardInput = false;
+})
+
+document.getElementById("send-word-input").addEventListener("focusout", (e) => {
+    console.log("change!", e.target.value);
+        allowKeyboardInput = true;
+})
 
 let start = Date.now();
 let end = Date.now();
@@ -854,7 +869,7 @@ document.addEventListener("DOMContentLoaded", async function(){
 
 document.addEventListener('keydown', function(event){
     let key = event.key;
-    if(stages.currentStage == "calibration"){
+    if(stages.currentStage == "calibration" && allowKeyboardInput){
         handleCharacterSend(key);
     }
 })
@@ -875,10 +890,33 @@ async function handleMotorPress(motorid){
     document.getElementById("motor" + (motorid).toString()).classList.add("active")
 }
 
+async function delay(time){
+    await new Promise(r => setTimeout(r, time));
+}
+
+
+
+document.getElementById("send-random-word-button").addEventListener("click", async (e) => {
+    handleSendWord();
+})
+
+
+async function handleSendWord(){
+    const word = document.getElementById("send-word-input").value.toLowerCase();
+    console.log("SENDING WORD:", word);
+
+
+    for(let i =0; i < word.length; i++){
+        await handleCharacterSend(word[i]);
+        await delay(PULSE_DURATION + 250);
+    }
+}
+
+let currentWord = "";
+
 //sends a given character to serial and updates visual indicator of which motors are activated
 async function handleCharacterSend(char){
     //send the character to the arduino if it's connected
-
         if(serialMode == "pack"){
             if(port!=null) writeToStream(packConfigToChar(alphabet[char]));
             console.log("sending packed:", packConfigToChar(alphabet[char]));
@@ -889,20 +927,8 @@ async function handleCharacterSend(char){
         }
 
     if(["learn"].includes(mode)){
-        //demonstrate which buttons need highlighting
-        let motorConfig = alphabet[char] || [];
-        for(let i = 0; i<motorConfig.length; i++){
-            if(motorConfig[i] == 1){
-                document.getElementById("motor" + (i+1).toString()).classList.add("active");
-                await new Promise(r => setTimeout(r, 350));
-            }
-            else{
-                document.getElementById("motor" + (i+1).toString()).classList.remove("active")
-            }
-        }
 
-        //update current symbol indicator
-
+        //show what character(s) sent to arduino
         if(char >= '1' && char <= '6'){
             currentSymbol.textContent = "motor "+ char;
             for(let i = 1; i<=6; i++){
@@ -916,6 +942,27 @@ async function handleCharacterSend(char){
         else{
             currentSymbol.textContent = char + " (not in alphabet)"
         }
+
+        //demonstrate which buttons need highlighting
+        let motorConfig = alphabet[char] || [];
+        for(let i = 0; i<motorConfig.length; i++){
+            document.getElementById("motor" + (i+1).toString()).classList.remove("active");
+        }
+
+        for(let i = 0; i<motorConfig.length; i++){
+            if(motorConfig[i] == 1){
+                document.getElementById("motor" + (i+1).toString()).classList.add("active");
+                await delay(STAGGER_DURATION)
+            }
+            else{
+                document.getElementById("motor" + (i+1).toString()).classList.remove("active");
+            }
+        }
+
+        await delay(STAGGER_END_DELAY);
+
+        //update current symbol indicator
+
     }
 
 }
