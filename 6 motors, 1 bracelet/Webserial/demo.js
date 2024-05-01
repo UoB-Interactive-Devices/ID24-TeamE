@@ -389,7 +389,9 @@ function handleParticipantDownload(){
     }
 
     previousParticipants.push(newParticipant);
+    const boolData = newParticipant.answerHistory.map(a => a.isCorrect);
 
+    downloadObjectAsTxt(boolData, newParticipant.participantID);
     downloadObjectAsJson(previousParticipants, "User Evaluation ALL as of " + dateStr);
     downloadObjectAsJson(newParticipant, "User Evaluation of " + newParticipant.participantID);
 
@@ -401,7 +403,7 @@ function updateEvaluationGui(){
     let currentQuestionNo = evaluationModel.currentParticipant.currentQuestionNo;
     document.getElementById("eval-play-letter").textContent="Play Letter"
 
-    if (currentQuestionNo >= evaluationModel.currentParticipant.noQuestions || currentQuestionNo > 10){
+    if (currentQuestionNo >= evaluationModel.currentParticipant.noQuestions || currentQuestionNo > 1){
         document.getElementById("download-participant-data").classList.remove("hidden");
     }
 
@@ -960,7 +962,28 @@ function handleAlphabetDownload(){
 //     reader.readAsText(e);
 // }
 
+function downloadObjectAsTxt(exportObj, exportName){
+    var dataStr = "";
+    console.log(exportObj);
+    if(exportObj){
+        for(let i = 0; i< exportObj.length; i++){
+            dataStr += exportObj[i];
+            dataStr+=",";
+        }
+    }
 
+    dataStr += exportObj.length;
+
+    dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(dataStr);
+
+    console.log(dataStr);
+    var downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href",     dataStr);
+    downloadAnchorNode.setAttribute("download", exportName + ".json");
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+}
 
 
 //used to download JSON files
